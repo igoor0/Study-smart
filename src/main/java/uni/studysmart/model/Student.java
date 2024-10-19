@@ -1,4 +1,4 @@
-package uni.studysmart;
+package uni.studysmart.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +15,7 @@ public class Student {
 
     @Id
     @GeneratedValue
-    private Long studentId;
+    private Long id;
     private String firstName;
     private String lastName;
     private String indexNumber;
