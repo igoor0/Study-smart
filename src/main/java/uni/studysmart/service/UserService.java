@@ -1,25 +1,23 @@
 package uni.studysmart.service;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uni.studysmart.model.User;
 import uni.studysmart.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<User> getUsers() {
+            return userRepository.findAll();
     }
-
-    public List<User> allUsers() {
-        List<User> users = new ArrayList<>();
-
-        userRepository.findAll().forEach(users::add);
-
-        return users;
+    public User getUser(Long id) {
+            return userRepository.findById(id).orElse(null);
     }
 }

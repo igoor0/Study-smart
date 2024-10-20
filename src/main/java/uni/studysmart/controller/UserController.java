@@ -1,9 +1,10 @@
 package uni.studysmart.controller;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.studysmart.model.User;
@@ -11,28 +12,21 @@ import uni.studysmart.service.UserService;
 
 import java.util.List;
 
-@RequestMapping("/users")
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
-    private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User currentUser = (User) authentication.getPrincipal();
-
-        return ResponseEntity.ok(currentUser);
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> allUsers() {
-        List <User> users = userService.allUsers();
-
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok(userService.getUsers());
     }
+
+    @GetMapping("/{user}")
+    public ResponseEntity<User> getUser(@PathVariable Long user) {
+        return ResponseEntity.ok(userService.getUser(user));
+    }
+
 }
