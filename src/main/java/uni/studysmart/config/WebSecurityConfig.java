@@ -47,9 +47,7 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .httpBasic(Customizer.withDefaults());
-
+            .cors(Customizer.withDefaults());
 
             return httpSecurity.build();
     }
