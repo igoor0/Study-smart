@@ -19,8 +19,33 @@ import uni.studysmart.repository.UserRepository;
 public class StudySmartApplication {
 
     public static void main(String[] args) {SpringApplication.run(StudySmartApplication.class, args);
+        initializeUsers();
     }
 
+    private static void initializeUsers() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        RegisterRequest[] users = new RegisterRequest[]{
+                new RegisterRequest("admin", "admin", "admin@admin.umg.pl", "password"),
+                new RegisterRequest("Jan", "Kowalski", "jan.kowalski@wykladowca.umg.pl", "password"),
+                new RegisterRequest("Anna", "Nowak", "anna.nowak@student.umg.pl", "password"),
+                new RegisterRequest("Igor", "Nowak", "igor@student.umg.pl", "password"),
+                new RegisterRequest("Piotr", "Zieliński", "piotr.zielinski@planner.umg.pl", "password")
+        };
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        for (RegisterRequest user : users) {
+            HttpEntity<RegisterRequest> request = new HttpEntity<>(user, headers);
+            try {
+                restTemplate.exchange("http://localhost:8080/api/auth/register", HttpMethod.POST, request, String.class);
+                System.out.println("User " + user.getEmail() + " registered successfully.");
+            } catch (Exception e) {
+                System.out.println("Error registering user " + user.getEmail() + ": " + e.getMessage());
+            }
+        }
+    }
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
