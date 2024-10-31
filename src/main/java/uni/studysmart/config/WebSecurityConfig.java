@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                                     .requestMatchers("/api/auth/**").permitAll()
                                     .requestMatchers("/api/products/**").permitAll()
                                     .requestMatchers("/swagger-ui/**").permitAll()
-                                    .requestMatchers("/v3/api-docs").permitAll()
+                                    .requestMatchers("/v3/api-docs/**").permitAll()
                                     .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
                                     .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "USER", "MANAGER")
                                 .anyRequest()
@@ -51,14 +51,14 @@ public class WebSecurityConfig {
 
             return httpSecurity.build();
     }
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("*"));
+//        configuration.setAllowedMethods(Arrays.asList("*"));
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }
