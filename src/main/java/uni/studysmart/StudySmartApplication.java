@@ -27,10 +27,10 @@ public class StudySmartApplication {
 
         RegisterRequest[] users = new RegisterRequest[]{
                 new RegisterRequest("admin", "admin", "admin@admin.umg.pl", "password"),
-                new RegisterRequest("Jan", "Kowalski", "jan.kowalski@wykladowca.umg.pl", "password"),
-                new RegisterRequest("Anna", "Nowak", "anna.nowak@student.umg.pl", "password"),
-                new RegisterRequest("Igor", "Nowak", "igor@student.umg.pl", "password"),
-                new RegisterRequest("Piotr", "Zieliński", "piotr.zielinski@planner.umg.pl", "password")
+//                new RegisterRequest("Jan", "Kowalski", "jan.kowalski@wykladowca.umg.pl", "password"),
+//                new RegisterRequest("Anna", "Nowak", "anna.nowak@student.umg.pl", "password"),
+//                new RegisterRequest("Igor", "Nowak", "igor@student.umg.pl", "password"),
+//                new RegisterRequest("Piotr", "Zieliński", "piotr.zielinski@planner.umg.pl", "password")
         };
 
         HttpHeaders headers = new HttpHeaders();
