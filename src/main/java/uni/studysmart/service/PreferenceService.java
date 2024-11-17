@@ -1,5 +1,6 @@
 package uni.studysmart.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uni.studysmart.model.Preference;
 
@@ -14,6 +15,8 @@ import uni.studysmart.request.PreferenceRequest;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -53,6 +56,10 @@ public class PreferenceService {
         preference.setEndTime(endTime);
 
         preferenceRepository.save(preference);
+    }
+    public ResponseEntity<List<Preference>> getAllPreferences() {
+        List<Preference> preferences = preferenceRepository.findAll();
+        return ResponseEntity.ok(preferences);
     }
 
 }

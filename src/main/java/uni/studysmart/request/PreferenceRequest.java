@@ -14,6 +14,6 @@ public class PreferenceRequest {
     private Long studentId;
     private Long courseId;
     private DayOfWeek dayOfWeek;
-    private String startTime;   //format 'hh:mm'
-    private String endTime;     //format 'hh:mm'
+    private String startTime;
+    private String endTime;
 }

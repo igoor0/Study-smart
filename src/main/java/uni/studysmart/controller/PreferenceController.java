@@ -10,12 +10,19 @@ import uni.studysmart.model.Preference;
 import uni.studysmart.request.PreferenceRequest;
 import uni.studysmart.service.PreferenceService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/preferences")
 public class PreferenceController {
 
     @Autowired
     private PreferenceService preferenceService;
+
+    @GetMapping
+    public ResponseEntity<List<Preference>> getAllPreferences() {
+        return preferenceService.getAllPreferences();
+    }
 
     @PostMapping
     public ResponseEntity<String> addPreference(@RequestBody PreferenceRequest preference) {
