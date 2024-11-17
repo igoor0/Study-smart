@@ -29,5 +29,10 @@ public class AvailabilityController {
             return ResponseEntity.badRequest().body("Błąd podczas dodawania dostępności: " + e.getMessage());
         }
     }
+//    @GetMapping
+//    public ResponseEntity<Availability> getAvailabilityById(@RequestParam("id") Long id) {
+//
+//        return availabilityService.getAvailabilityById(id);
+//    }
 }
 

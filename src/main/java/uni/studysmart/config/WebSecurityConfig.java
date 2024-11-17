@@ -31,23 +31,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        // set the name of the attribute the CsrfToken will be populated on
         requestHandler.setCsrfRequestAttributeName(null);
-                httpSecurity.authorizeHttpRequests(
+        httpSecurity.authorizeHttpRequests(
                         auth -> auth
-                                    .requestMatchers("/api/auth/**").permitAll()
-                                    .requestMatchers("/swagger-ui/**").permitAll()
-                                    .requestMatchers("/v3/api-docs/**").permitAll()
-                                    .requestMatchers("/api/preferences").hasAnyRole("PLANNER", "STUDENT")
-                                    .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-                                    .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "PLANNER")
+                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/api/preferences").hasAnyRole("PLANNER", "STUDENT")
+                                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "PLANNER")
                                 .anyRequest()
                                 .authenticated()
-                                )
+                )
                 .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(csrf -> csrf.disable());
-            return httpSecurity.build();
+                .csrf(csrf -> csrf.disable());
+        return httpSecurity.build();
     }
 
     @Bean

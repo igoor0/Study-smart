@@ -11,6 +11,7 @@ import uni.studysmart.request.AvailabilityRequest;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AvailabilityService {
@@ -40,6 +41,11 @@ public class AvailabilityService {
     public ResponseEntity<List<Availability>> getAllAvailabilities() {
         List<Availability> availabilities = availabilityRepository.findAll();
         return ResponseEntity.ok(availabilities);
+    }
+
+    public ResponseEntity<Availability> getAvailabilityById(Long id) {
+        Optional<Availability> availability = availabilityRepository.findById(id);
+        return availability.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
 
