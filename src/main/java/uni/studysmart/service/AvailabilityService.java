@@ -1,4 +1,5 @@
 package uni.studysmart.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import uni.studysmart.request.AvailabilityRequest;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,21 +22,27 @@ public class AvailabilityService {
     private AvailabilityRepository availabilityRepository;
     @Autowired
     private LecturerRepository lecturerRepository;
+    private AvailabilityRequest availabilityRequest;
 
     public void addAvailability(AvailabilityRequest request) {
         Lecturer lecturer = lecturerRepository.findById(request.getLecturerId())
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wykładowcy o podanym ID"));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime startTime = LocalTime.parse(request.getStartTime(), formatter);
-        LocalTime endTime = LocalTime.parse(request.getEndTime(), formatter);
+        // Parse String times into LocalTime
+        LocalTime startTime;
+        LocalTime endTime;
+        try {
+            startTime = LocalTime.parse(availabilityRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+            endTime = LocalTime.parse(availabilityRequest.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid time format. Use hh:mm, e.g., 09:00", e);
+        }
 
         Availability availability = new Availability();
         availability.setDayOfWeek(request.getDayOfWeek());
         availability.setStartTime(startTime);
         availability.setEndTime(endTime);
         availability.setLecturer(lecturer);
-
         availabilityRepository.save(availability);
     }
 

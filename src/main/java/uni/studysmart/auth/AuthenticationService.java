@@ -48,6 +48,8 @@ public class AuthenticationService {
         }
 
         user.setEmail(request.getEmail());
+        user.setFirstName(request.getFirstname());
+        user.setLastName(request.getLastname());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         // Zapis użytkownika do bazy danych

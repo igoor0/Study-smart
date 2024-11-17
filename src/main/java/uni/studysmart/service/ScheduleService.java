@@ -33,10 +33,6 @@ public class ScheduleService {
     @Autowired
     private CourseRepository courseRepository;
 
-    /**
-     * Dopasowuje optymalny czas na zajęcia na podstawie dostępności wykładowcy
-     * oraz preferencji studentów.
-     */
     public List<LocalTime> getBestMatchingSchedule(Long lecturerId, Long courseId, Long groupId) {
         // Pobieramy dostępność wykładowcy
         List<Availability> availabilities = availabilityRepository.findByLecturerId(lecturerId);
@@ -59,7 +55,6 @@ public class ScheduleService {
             timeVotes.put(availability, voteCount);
         }
 
-        // Sortujemy dostępności według liczby głosów i wybieramy najlepsze
         return timeVotes.entrySet().stream()
                 .sorted(Map.Entry.<Availability, Integer>comparingByValue().reversed())
                 .limit(6) // Zakładamy 6 spotkań w semestrze
