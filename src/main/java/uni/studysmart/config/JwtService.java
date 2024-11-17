@@ -32,17 +32,21 @@ public class JwtService {
     public String extractLastName(String token) {
         return extractClaim(token, claims -> claims.get("lastName", String.class));
     }
+    public String extractRole(String jwt) {
+        return extractClaim(jwt, claims -> claims.get("role", String.class));
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails, Long userId, String firstName, String lastName) {
+    public String generateToken(UserDetails userDetails, Long userId, String firstName, String lastName, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);
         claims.put("firstName", firstName);
         claims.put("lastName", lastName);
+        claims.put("userRole", role);
         return generateToken(claims, userDetails);
     }
 
@@ -87,4 +91,6 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }

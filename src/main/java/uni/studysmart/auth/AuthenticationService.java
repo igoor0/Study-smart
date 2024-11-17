@@ -60,7 +60,8 @@ public class AuthenticationService {
                 user,
                 user.getId(),
                 user.getFirstName(),
-                user.getLastName());
+                user.getLastName(),
+                user.getRole().toString());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -78,7 +79,8 @@ public class AuthenticationService {
                 user,
                 user.getId(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.getRole().toString()
                 );
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -95,7 +97,8 @@ public class AuthenticationService {
                     user,
                     user.getId(),
                     user.getFirstName(),
-                    user.getLastName());
+                    user.getLastName(),
+                    user.getRole().toString());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
