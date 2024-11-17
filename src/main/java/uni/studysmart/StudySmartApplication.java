@@ -23,6 +23,7 @@ public class StudySmartApplication {
         SpringApplication.run(StudySmartApplication.class, args);
         //initializeUsers();
     }
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -30,6 +31,10 @@ public class StudySmartApplication {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowedOrigins("*");
             }
+        };
+    }
+}
+
 /*
     private static void initializeUsers() {
         RestTemplate restTemplate = new RestTemplate();
@@ -60,4 +65,3 @@ public class StudySmartApplication {
         };
     }
  */
-}
