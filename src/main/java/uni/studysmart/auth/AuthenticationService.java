@@ -56,10 +56,13 @@ public class AuthenticationService {
         userRepository.save(user);
 
         // Generowanie tokenu JWT
-        var jwtToken = jwtService.generateToken(user, user.getId());
+        var jwtToken = jwtService.generateToken(
+                user,
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .id(user.getId())
                 .build();
     }
 
@@ -71,10 +74,14 @@ public class AuthenticationService {
         );
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ApiRequestException("User with the email " + request.getEmail() + " not found"));
-        var jwtToken = jwtService.generateToken(user, user.getId());
+        var jwtToken = jwtService.generateToken(
+                user,
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName()
+                );
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .id(user.getId())
                 .build();
     }
 
@@ -84,7 +91,11 @@ public class AuthenticationService {
         if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
-            var jwtToken = jwtService.generateToken(user, user.getId());
+            var jwtToken = jwtService.generateToken(
+                    user,
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getLastName());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
