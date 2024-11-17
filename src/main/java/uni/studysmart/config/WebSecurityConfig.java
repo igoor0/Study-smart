@@ -36,21 +36,20 @@ public class WebSecurityConfig {
                 httpSecurity.authorizeHttpRequests(
                         auth -> auth
                                     .requestMatchers("/api/auth/**").permitAll()
-                                    .requestMatchers("/api/products/**").permitAll()
                                     .requestMatchers("/swagger-ui/**").permitAll()
                                     .requestMatchers("/v3/api-docs/**").permitAll()
+                                    .requestMatchers("/api/preferences").hasAnyRole("PLANNER", "STUDENT")
                                     .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-                                    .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "USER", "MANAGER")
+                                    .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "PLANNER")
                                 .anyRequest()
                                 .authenticated()
                                 )
                 .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults());
-
+            .csrf(csrf -> csrf.disable());
             return httpSecurity.build();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
