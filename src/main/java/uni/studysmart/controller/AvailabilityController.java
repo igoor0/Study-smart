@@ -3,6 +3,7 @@ package uni.studysmart.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uni.studysmart.dto.AvailabilityDTO;
 import uni.studysmart.model.Availability;
 import uni.studysmart.request.AvailabilityRequest;
 import uni.studysmart.service.AvailabilityService;
@@ -17,7 +18,7 @@ public class AvailabilityController {
     private AvailabilityService availabilityService;
 
     @GetMapping
-    public ResponseEntity<List<Availability>> getAvailability() {
+    public ResponseEntity<List<AvailabilityDTO>> getAvailability() {
         return availabilityService.getAllAvailabilities();
     }
     @PostMapping("/add")

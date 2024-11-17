@@ -3,6 +3,8 @@ package uni.studysmart.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uni.studysmart.dto.AvailabilityDTO;
+import uni.studysmart.dto.LecturerDTO;
 import uni.studysmart.model.Availability;
 import uni.studysmart.model.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
@@ -14,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AvailabilityService {
@@ -22,7 +25,6 @@ public class AvailabilityService {
     private AvailabilityRepository availabilityRepository;
     @Autowired
     private LecturerRepository lecturerRepository;
-    private AvailabilityRequest availabilityRequest;
 
     public void addAvailability(AvailabilityRequest request) {
         Lecturer lecturer = lecturerRepository.findById(request.getLecturerId())
@@ -32,8 +34,8 @@ public class AvailabilityService {
         LocalTime startTime;
         LocalTime endTime;
         try {
-            startTime = LocalTime.parse(availabilityRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
-            endTime = LocalTime.parse(availabilityRequest.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"));
+            startTime = LocalTime.parse(request.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+            endTime = LocalTime.parse(request.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"));
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid time format. Use hh:mm, e.g., 09:00", e);
         }
@@ -46,9 +48,26 @@ public class AvailabilityService {
         availabilityRepository.save(availability);
     }
 
-    public ResponseEntity<List<Availability>> getAllAvailabilities() {
+    public ResponseEntity<List<AvailabilityDTO>> getAllAvailabilities() {
         List<Availability> availabilities = availabilityRepository.findAll();
-        return ResponseEntity.ok(availabilities);
+        List<AvailabilityDTO> availabilityDTOs = availabilities.stream().map(availability -> {
+            Lecturer lecturer = availability.getLecturer();
+            LecturerDTO lecturerDTO = new LecturerDTO(
+                    lecturer.getId(),
+                    lecturer.getFirstName(),
+                    lecturer.getLastName(),
+                    lecturer.getEmail()
+            );
+            return new AvailabilityDTO(
+                    availability.getId(),
+                    availability.getDayOfWeek().name(),
+                    availability.getStartTime().toString(),
+                    availability.getEndTime().toString(),
+                    lecturerDTO
+            );
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(availabilityDTOs);
     }
 
     public ResponseEntity<Availability> getAvailabilityById(Long id) {
