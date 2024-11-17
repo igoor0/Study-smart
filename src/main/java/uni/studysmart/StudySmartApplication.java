@@ -22,6 +22,12 @@ public class StudySmartApplication {
         SpringApplication.run(StudySmartApplication.class, args);
         //initializeUsers();
     }
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("*").allowedMethods("*").allowedOrigins("*");
+            }
 /*
     private static void initializeUsers() {
         RestTemplate restTemplate = new RestTemplate();
@@ -48,12 +54,7 @@ public class StudySmartApplication {
         }
     }
 
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("POST", "GET", "PUT", "DELETE").allowedOrigins("*");
-            }
+
         };
     }
  */
