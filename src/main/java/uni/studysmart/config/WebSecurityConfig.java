@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers("/api/preferences").hasAnyRole("PLANNER", "STUDENT")
+                                .requestMatchers("/api/preferences/**").hasAnyRole("PLANNER", "STUDENT")
                                 .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "PLANNER")
                                 .anyRequest()
