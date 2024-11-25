@@ -16,5 +16,6 @@ public class Course {
 
     @ManyToMany(mappedBy = "courses")
     private List<Group> groups;
-}
+    //TODO: ADD COURSE CRUD LOGIC
 
+}

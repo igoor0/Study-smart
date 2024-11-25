@@ -45,8 +45,6 @@ public class WebSecurityConfig {
                                 .authenticated()
                 )
                 .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
         ;
         return httpSecurity.build();
     }

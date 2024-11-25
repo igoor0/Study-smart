@@ -15,7 +15,6 @@ import uni.studysmart.request.PreferenceRequest;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,7 +60,6 @@ public class PreferenceService {
         List<Preference> preferences = preferenceRepository.findAll();
         return ResponseEntity.ok(preferences);
     }
-
 }
 
 
