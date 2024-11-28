@@ -9,7 +9,9 @@ import uni.studysmart.model.Availability;
 import uni.studysmart.model.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
+import uni.studysmart.repository.PreferenceRepository;
 import uni.studysmart.request.AvailabilityRequest;
+import uni.studysmart.service.utils.Utils;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +27,10 @@ public class AvailabilityService {
     private AvailabilityRepository availabilityRepository;
     @Autowired
     private LecturerRepository lecturerRepository;
+    @Autowired
+    private PreferenceRepository preferenceRepository;
+    @Autowired
+    private Utils utils;
 
     public void addAvailability(AvailabilityRequest request) {
         Lecturer lecturer = lecturerRepository.findById(request.getLecturerId())
@@ -78,7 +84,9 @@ public class AvailabilityService {
 
     public ResponseEntity deleteAvailability(Long id) {
         Optional<Availability> availability = availabilityRepository.findById(id);
+
         if (availability.isPresent()) {
+            utils.deleteAllPreferencesConflictsAvailability(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));
             availabilityRepository.delete(availability.get());
         }
         return ResponseEntity.ok(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));

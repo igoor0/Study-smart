@@ -30,6 +30,10 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
+    @GetMapping
+    public ResponseEntity<CourseDTO> getCourseById(@RequestParam Long id) {
+        return ResponseEntity.ok(courseService.getCourseById(id));
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity deleteCourse(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.deleteCourse(id));
