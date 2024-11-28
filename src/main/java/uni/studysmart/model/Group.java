@@ -14,7 +14,7 @@ public class Group {
     @OneToMany(mappedBy = "group")
     private List<Student> students;
 
-    @ManyToMany
-    private List<Course> courses;
+    @ManyToOne
+    private Course courses;
 }
 

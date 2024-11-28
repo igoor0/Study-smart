@@ -20,10 +20,6 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate date;  // Data zajęć
-    private LocalTime startTime;  // Godzina rozpoczęcia
-    private LocalTime endTime;  // Godzina zakończenia
-
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;  // Kurs
