@@ -27,7 +27,6 @@ public class Course {
     private Lecturer lecturer;
     @OneToMany(mappedBy = "courses")
     private List<Group> groups;
-    //TODO: ADD COURSE CRUD LOGIC
 
     //Mamy dany kurs
     //Ten kurs jest prowadzony przez KILKU prowadzących (dany kurs może mieć wielu prowadzących)

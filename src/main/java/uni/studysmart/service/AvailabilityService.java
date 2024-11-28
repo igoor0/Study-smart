@@ -72,7 +72,16 @@ public class AvailabilityService {
 
     public ResponseEntity<Availability> getAvailabilityById(Long id) {
         Optional<Availability> availability = availabilityRepository.findById(id);
-        return availability.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(availability.orElseThrow(() -> new IllegalArgumentException("Availibility not found")));
+    }
+
+
+    public ResponseEntity deleteAvailability(Long id) {
+        Optional<Availability> availability = availabilityRepository.findById(id);
+        if (availability.isPresent()) {
+            availabilityRepository.delete(availability.get());
+        }
+        return ResponseEntity.ok(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));
     }
 }
 

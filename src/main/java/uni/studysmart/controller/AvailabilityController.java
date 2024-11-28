@@ -30,10 +30,13 @@ public class AvailabilityController {
             return ResponseEntity.badRequest().body("Błąd podczas dodawania dostępności: " + e.getMessage());
         }
     }
-//    @GetMapping
-//    public ResponseEntity<Availability> getAvailabilityById(@RequestParam("id") Long id) {
-//
-//        return availabilityService.getAvailabilityById(id);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Availability> getAvailabilityById(@PathVariable Long id) {
+        return availabilityService.getAvailabilityById(id);
+    }
+    @DeleteMapping("/id")
+    public ResponseEntity deleteAvailability(@PathVariable Long id) {
+        return ResponseEntity.ok(availabilityService.deleteAvailability(id));
+    }
 }
 
