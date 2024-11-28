@@ -56,7 +56,7 @@ public class CourseService {
     public boolean isCourseInSchedule(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
         if (schedule == null) return false; //TODO: do przemyślenia
-        return schedule.getCourse().isScheduled();
+        return schedule.getCourse().getIsScheduled();
     }
 
     //Czy możemy ten kurs wpisać w tych godzinach (czy występuje konflikt w innych grupach dla tego kursu)
@@ -72,8 +72,8 @@ public class CourseService {
                     //DRUGI - Kurs jest po i w trakcie innych zajęć
 
                     //Czy dana grupa ma w tych godzinach zajęcia
-                    if ((schedule.getCourse().isScheduled() && schedule.getCourse().getStartTime().isBefore(course.getEndTime())) ||
-                            (schedule.getCourse().isScheduled() && schedule.getCourse().getEndTime().isBefore(course.getStartTime()))) {
+                    if ((schedule.getCourse().getIsScheduled() && schedule.getCourse().getStartTime().isBefore(course.getEndTime())) ||
+                            (schedule.getCourse().getIsScheduled() && schedule.getCourse().getEndTime().isBefore(course.getStartTime()))) {
                         //Ile grup ma w tych godzinach zajęcia / Jeżeli mniej niż jest dostępnych wykładowców tego przedmiotu, to możemy mieć tu zajęcia z dostępnym wykładowcą (ale w innej sali hehe)
                         return schedule.getCourse().getLecturer().equals(lecturer);
                     } else return true;
@@ -122,10 +122,9 @@ public class CourseService {
                 .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + id));
 
         existingCourse.setName(courseDTO.getName());
-        existingCourse.setScheduled(courseDTO.isScheduled());
+        existingCourse.setIsScheduled(courseDTO.isScheduled());
         existingCourse.setCourseDuration(courseDTO.getCourseDuration());
 
-        // Konwersja String -> LocalTime
         existingCourse.setStartTime(courseDTO.getStartTime() != null
                 ? LocalTime.parse(courseDTO.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"))
                 : null);
@@ -170,7 +169,7 @@ class CourseMapper {
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
-                course.isScheduled(),
+                course.getIsScheduled(),
                 course.getCourseDuration(),
                 startTime,
                 endTime,
@@ -198,7 +197,7 @@ class CourseMapper {
         Course course = new Course();
         course.setId(courseDTO.getId());
         course.setName(courseDTO.getName());
-        course.setScheduled(courseDTO.isScheduled());
+        course.setIsScheduled(courseDTO.isScheduled());
         course.setCourseDuration(courseDTO.getCourseDuration());
         course.setStartTime(startTime);
         course.setEndTime(endTime);

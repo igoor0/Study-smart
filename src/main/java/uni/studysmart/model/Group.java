@@ -8,8 +8,6 @@ import java.util.List;
 @Entity(name="student_groups")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @RequiredArgsConstructor
 public class Group {
     @Id

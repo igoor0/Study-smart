@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class GroupDTO {
     private Long id;
     private String groupName;
