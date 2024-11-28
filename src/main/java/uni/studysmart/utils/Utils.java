@@ -16,10 +16,10 @@ public class Utils {
     @Autowired
     private PreferenceRepository preferenceRepository;
 
-    public void deleteAllPreferencesConflictsAvailability(Availability availability) {
+    public void deleteAllPreferencesBetweeenAvailability(Availability availability) {
         List<Preference> preferenceList = preferenceRepository.findAll();
         for (Preference preference : preferenceList) {
-            if(preference.getStartTime().isBefore(availability.getEndTime()) || preference.getEndTime().isAfter(availability.getStartTime()))
+            if(preference.getStartTime().isBefore(availability.getEndTime()) && preference.getEndTime().isAfter(availability.getStartTime()))
             {
                 preferenceRepository.delete(preference);
             }
