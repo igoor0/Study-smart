@@ -25,7 +25,6 @@ public class Course {
 
     @ManyToOne
     private Lecturer lecturer;
-
     @OneToMany(mappedBy = "courses")
     private List<Group> groups;
     //TODO: ADD COURSE CRUD LOGIC

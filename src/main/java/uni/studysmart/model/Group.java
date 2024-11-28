@@ -1,16 +1,16 @@
 package uni.studysmart.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
+@Entity(name="student_groups")
 @Getter
 @Setter
-@Data
-@Entity(name="student_groups")
+@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

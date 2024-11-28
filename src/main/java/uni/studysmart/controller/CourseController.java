@@ -2,13 +2,13 @@ package uni.studysmart.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import uni.studysmart.dto.CourseDTO;
 import uni.studysmart.model.Course;
 import uni.studysmart.request.CourseRequest;
 import uni.studysmart.service.CourseService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -17,11 +17,12 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveCourse(@RequestBody CourseRequest courseRequest) {
-        Course course = courseService.saveCourse(courseRequest);
-        if(course == null) {
-            return ResponseEntity.badRequest().body("Błąd podczas dodawania kursu!");
-        }
-        return ResponseEntity.ok("Dodano pomyślnie kurs: " + course.getName());
+    public ResponseEntity<String> createCourse(@RequestBody CourseDTO courseRequest) {
+        courseService.createCourse(courseRequest);
+        return ResponseEntity.ok("Utworzono kurs pomyślnie");
+    }
+    @GetMapping
+    public ResponseEntity<List<CourseDTO>> getAllCourses() {
+        return ResponseEntity.ok(courseService.getAllCourses());
     }
 }
