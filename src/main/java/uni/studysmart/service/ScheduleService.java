@@ -66,9 +66,6 @@ public class ScheduleService {
 
         for (LocalTime time : bestTimes) {
             Schedule schedule = new Schedule();
-            schedule.setDate(LocalDate.now()); // Ustaw datę zajęć
-            schedule.setStartTime(time);
-            schedule.setEndTime(time.plusHours(2)); // Przykładowa długość zajęć (2 godziny)
             schedule.setGroup(groupRepository.findById(groupId)
                     .orElseThrow(() -> new IllegalArgumentException("Grupa nie istnieje")));
             schedule.setCourse(courseRepository.findById(courseId)

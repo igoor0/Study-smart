@@ -42,11 +42,11 @@ public class CourseService {
     public boolean isCourseInSchedule(Long scheduleId){
         Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
         if(schedule == null) return false; //TODO: do przemyślenia
-        return schedule.getCourse().isScheduled();
+        return schedule.getCourse().getIsScheduled();
     }
 
     //Czy możemy ten kurs wpisać w tych godzinach (czy występuje konflikt w innych grupach dla tego kursu)
-    public boolean hasScheduleConflict(Long courseId, LocalTime startTime, LocalTime endTime){
+    public boolean hasScheduleConflict(Long courseId){
         Course course = courseRepository.findById(courseId).orElse(null);
         if (course == null) return true;
         List<Schedule> schedules = scheduleRepository.findAll();
@@ -54,12 +54,12 @@ public class CourseService {
             for (Lecturer lecturer : lecturerRepository.findAllByCourses_Id(courseId))
             if(schedule.getCourse().getName().equals(course.getName())){
                 //DWA PRZYPADKI
-                //PIERWSZY - Kurs jest przed i w trakcie innych zajęć
-                //DRUGI - Kurs jest po i w trakcie innych zajęć
+                //PIERWSZY-Kurs jest przed i w trakcie innych zajęć
+                //DRUGI-Kurs jest po i w trakcie innych zajęć
 
                 //Czy dana grupa ma w tych godzinach zajęcia
-                if( ( schedule.getCourse().isScheduled() && schedule.getCourse().getStartTime().isBefore(course.getEndTime()) ) ||
-                        ( schedule.getCourse().isScheduled() && schedule.getCourse().getEndTime().isBefore(course.getStartTime()) )){
+                if( ( schedule.getCourse().getIsScheduled() && schedule.getCourse().getStartTime().isBefore(course.getEndTime()) ) ||
+                        ( schedule.getCourse().getIsScheduled() && schedule.getCourse().getEndTime().isBefore(course.getStartTime()) )){
                     //Ile grup ma w tych godzinach zajęcia / Jeżeli mniej niż jest dostępnych wykładowców tego przedmiotu, to możemy mieć tu zajęcia z dostępnym wykładowcą (ale w innej sali hehe)
                     return schedule.getCourse().getLecturer().equals(lecturer);
                 }
@@ -71,16 +71,12 @@ public class CourseService {
 
 
     public Course saveCourse(CourseRequest courseRequest) {
-        List<Group> groupList = groupRepository.findGroupsByCourses_Id((long) Integer.parseInt(courseRequest.getGroupId()));
-        Lecturer lecturer = lecturerRepository.findById((long) Integer.parseInt(courseRequest.getLecturerId())).orElse(null);
         Course course = new Course();
         course.setCourseDuration(courseRequest.getCourseDuration());
-        course.setScheduled(false);
+        course.setIsScheduled(false);
         course.setStartTime(null);
         course.setEndTime(null);
         course.setName(courseRequest.getName());
-        course.setGroups(groupList);
-        course.setLecturer(lecturer);
         return courseRepository.save(course);
     }
 

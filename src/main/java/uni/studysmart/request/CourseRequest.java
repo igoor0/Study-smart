@@ -11,6 +11,4 @@ import java.util.List;
 public class CourseRequest {
     private String name;
     private int courseDuration;
-    private String lecturerId;
-    private String groupId;
 }
