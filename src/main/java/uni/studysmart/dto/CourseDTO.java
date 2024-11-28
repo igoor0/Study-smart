@@ -1,12 +1,6 @@
 package uni.studysmart.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
-import uni.studysmart.model.Group;
-import uni.studysmart.model.Lecturer;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Data

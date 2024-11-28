@@ -29,4 +29,14 @@ public class PreferenceController {
         preferenceService.addPreference(preference);
         return ResponseEntity.ok("Preferencja dodana pomyślnie");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Preference> getPreferenceById(@PathVariable Long id) {
+        return preferenceService.getPreferenceById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletePreferenceById(@PathVariable Long id) {
+        return ResponseEntity.ok(preferenceService.deletePreferenceById(id));
+    }
 }

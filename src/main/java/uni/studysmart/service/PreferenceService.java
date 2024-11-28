@@ -16,6 +16,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -59,6 +60,19 @@ public class PreferenceService {
     public ResponseEntity<List<Preference>> getAllPreferences() {
         List<Preference> preferences = preferenceRepository.findAll();
         return ResponseEntity.ok(preferences);
+    }
+
+    public ResponseEntity<Preference> getPreferenceById(Long id) {
+        Optional<Preference> preference = preferenceRepository.findById(id);
+        return ResponseEntity.ok(preference.orElseThrow(() -> new IllegalArgumentException("Preference not found")));
+    }
+
+    public ResponseEntity<Preference> deletePreferenceById(Long id) {
+        Optional<Preference> preference = preferenceRepository.findById(id);
+        if (preference.isPresent()) {
+            preferenceRepository.deleteById(id);
+        }
+        return ResponseEntity.ok(preference.orElseThrow(() -> new IllegalArgumentException("Preference not found")));
     }
 }
 

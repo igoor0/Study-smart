@@ -13,6 +13,7 @@ import uni.studysmart.model.User;
 import uni.studysmart.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,5 +43,13 @@ public class UserService {
                 .lastName(user.getLastName())
                 .role(user.getRole().name())
                 .build();
+    }
+
+    public ResponseEntity deleteUser(Long user) {
+        Optional<User> user1 = userRepository.findById(user);
+        if (user1.isPresent()) {
+            userRepository.deleteById(user);
+        }
+        return ResponseEntity.ok(user1.orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
 }
