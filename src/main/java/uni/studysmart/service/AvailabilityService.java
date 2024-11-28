@@ -11,7 +11,7 @@ import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.PreferenceRepository;
 import uni.studysmart.request.AvailabilityRequest;
-import uni.studysmart.service.utils.Utils;
+import uni.studysmart.utils.Utils;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
