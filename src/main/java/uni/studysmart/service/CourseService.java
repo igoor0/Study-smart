@@ -136,11 +136,12 @@ public class CourseService {
         return courseMapper.toCourseDTO(updatedCourse);
     }
 
-    public void deleteCourse(Long id) {
-        if (!courseRepository.existsById(id)) {
-            throw new IllegalArgumentException("Course not found with id: " + id);
+    public ResponseEntity deleteCourse(Long id) {
+        Optional<Course> course = courseRepository.findById(id);
+        if (course.isPresent()) {
+            courseRepository.deleteById(id);
         }
-        courseRepository.deleteById(id);
+        return ResponseEntity.ok(course.orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
 }
 

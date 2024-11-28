@@ -5,16 +5,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.dto.CourseDTO;
 import uni.studysmart.model.Course;
+import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.request.CourseRequest;
 import uni.studysmart.service.CourseService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController {
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private CourseRepository courseRepository;
 
     @PostMapping("/save")
     public ResponseEntity<String> createCourse(@RequestBody CourseDTO courseRequest) {
@@ -24,5 +28,10 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<List<CourseDTO>> getAllCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCourse(@PathVariable Long id) {
+        return ResponseEntity.ok(courseService.deleteCourse(id));
     }
 }

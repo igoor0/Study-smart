@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class PlannerService {
 
     @Autowired
-    UserService userService; // bedzie ich szukac po ROLE
+    UserService userService;
 
     @Autowired
     GroupService groupService;
@@ -17,6 +17,7 @@ public class PlannerService {
 
     @Autowired
     ScheduleService scheduleService;
+
 
 
 
