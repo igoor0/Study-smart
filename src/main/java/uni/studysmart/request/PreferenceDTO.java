@@ -5,12 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PreferenceRequest {
+public class PreferenceDTO {
     private Long studentId;
     private Long courseId;
     private DayOfWeek dayOfWeek;
