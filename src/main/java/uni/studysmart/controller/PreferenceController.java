@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.model.Preference;
-import uni.studysmart.request.PreferenceRequest;
+import uni.studysmart.request.PreferenceDTO;
 import uni.studysmart.service.PreferenceService;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class PreferenceController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addPreference(@RequestBody PreferenceRequest preference) {
+    public ResponseEntity<String> addPreference(@RequestBody PreferenceDTO preference) {
         preferenceService.addPreference(preference);
         return ResponseEntity.ok("Preferencja dodana pomyślnie");
     }

@@ -25,4 +25,16 @@ public class GroupService {
         List<Group> groups = groupRepository.findAll();
         return ResponseEntity.ok(groups);
     }
+
+    public Group getGroupById(Long id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono grupy o podanym ID: " + id));
+    }
+
+    public void deleteGroup(Long id) {
+        if (!groupRepository.existsById(id)) {
+            throw new IllegalArgumentException("Grupa o podanym ID nie istnieje: " + id);
+        }
+        groupRepository.deleteById(id);
+    }
 }

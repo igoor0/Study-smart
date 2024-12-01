@@ -28,4 +28,16 @@ public class GroupController {
         groupService.addGroup(group);
         return ResponseEntity.ok("Grupa dodana pomyślnie");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Group> getGroupById(@PathVariable Long id) {
+        Group group = groupService.getGroupById(id);
+        return ResponseEntity.ok(group);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGroup(@PathVariable Long id) {
+        groupService.deleteGroup(id);
+        return ResponseEntity.ok("Grupa usunięta pomyślnie");
+    }
 }

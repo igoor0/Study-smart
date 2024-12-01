@@ -10,7 +10,7 @@ import uni.studysmart.repository.PreferenceRepository;
 import uni.studysmart.repository.StudentRepository;
 import uni.studysmart.model.Course;
 import uni.studysmart.repository.CourseRepository;
-import uni.studysmart.request.PreferenceRequest;
+import uni.studysmart.request.PreferenceDTO;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +31,7 @@ public class PreferenceService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public void addPreference(PreferenceRequest preferenceRequest) {
+    public void addPreference(PreferenceDTO preferenceRequest) {
         Student student = studentRepository.findById(preferenceRequest.getStudentId())
                 .orElseThrow(() -> new IllegalArgumentException("Student not found"));
 
