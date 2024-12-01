@@ -86,7 +86,7 @@ public class AvailabilityService {
         Optional<Availability> availability = availabilityRepository.findById(id);
 
         if (availability.isPresent()) {
-            utils.deleteAllPreferencesConflictsAvailability(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));
+            utils.deleteAllPreferencesBetweeenAvailability(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));
             availabilityRepository.delete(availability.get());
         }
         return ResponseEntity.ok(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));

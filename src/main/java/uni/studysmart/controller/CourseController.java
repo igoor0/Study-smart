@@ -30,7 +30,7 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<CourseDTO> getCourseById(@RequestParam Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
