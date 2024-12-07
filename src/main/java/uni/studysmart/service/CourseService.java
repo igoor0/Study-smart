@@ -1,8 +1,6 @@
 package uni.studysmart.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.*;
 import uni.studysmart.model.*;
@@ -10,14 +8,12 @@ import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.repository.GroupRepository;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.ScheduleRepository;
-import uni.studysmart.request.CourseRequest;
 
-import java.time.DayOfWeek;
+
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
