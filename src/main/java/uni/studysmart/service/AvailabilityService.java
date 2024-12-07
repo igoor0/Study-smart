@@ -6,7 +6,6 @@ import uni.studysmart.model.*;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.PreferenceRepository;
-import uni.studysmart.utils.Utils;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -19,13 +18,11 @@ public class AvailabilityService {
     private final AvailabilityRepository availabilityRepository;
     private final LecturerRepository lecturerRepository;
     private final PreferenceRepository preferenceRepository;
-    private final Utils utils;
 
     public AvailabilityService(AvailabilityRepository availabilityRepository, LecturerRepository lecturerRepository, PreferenceRepository preferenceRepository, Utils utils) {
         this.availabilityRepository = availabilityRepository;
         this.lecturerRepository = lecturerRepository;
         this.preferenceRepository = preferenceRepository;
-        this.utils = utils;
     }
 
 

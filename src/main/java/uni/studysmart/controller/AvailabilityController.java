@@ -1,12 +1,9 @@
 package uni.studysmart.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.dto.AvailabilityDTO;
-import uni.studysmart.model.Availability;
-import uni.studysmart.request.AvailabilityRequest;
 import uni.studysmart.service.AvailabilityService;
 
 import java.util.List;
