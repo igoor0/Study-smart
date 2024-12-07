@@ -9,8 +9,8 @@ import uni.studysmart.repository.LecturerRepository;
 @Service
 @RequiredArgsConstructor
 public class LecturerService {
-    @Autowired
-    private LecturerRepository lecturerRepository;
+
+    private final LecturerRepository lecturerRepository;
 
     public Lecturer saveLecturer(Lecturer lecturer) {
         return lecturerRepository.save(lecturer);
