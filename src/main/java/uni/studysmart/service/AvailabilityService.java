@@ -19,7 +19,7 @@ public class AvailabilityService {
     private final LecturerRepository lecturerRepository;
     private final PreferenceRepository preferenceRepository;
 
-    public AvailabilityService(AvailabilityRepository availabilityRepository, LecturerRepository lecturerRepository, PreferenceRepository preferenceRepository, Utils utils) {
+    public AvailabilityService(AvailabilityRepository availabilityRepository, LecturerRepository lecturerRepository, PreferenceRepository preferenceRepository) {
         this.availabilityRepository = availabilityRepository;
         this.lecturerRepository = lecturerRepository;
         this.preferenceRepository = preferenceRepository;
