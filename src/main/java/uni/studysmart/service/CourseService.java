@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import uni.studysmart.dto.AvailabilityDTO;
-import uni.studysmart.dto.CourseDTO;
-import uni.studysmart.dto.GroupDTO;
-import uni.studysmart.dto.LecturerDTO;
+import uni.studysmart.dto.*;
 import uni.studysmart.model.*;
 import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.repository.GroupRepository;
@@ -15,6 +12,7 @@ import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.ScheduleRepository;
 import uni.studysmart.request.CourseRequest;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,34 +25,55 @@ public class CourseService {
 
     private final int SEMESTER_WEEKS = 15;
 
-    @Autowired
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    private GroupRepository groupRepository;
+    private final GroupRepository groupRepository;
 
-    @Autowired
-    private LecturerRepository lecturerRepository;
+    private final LecturerRepository lecturerRepository;
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
 
-    @Autowired
-    private CourseMapper courseMapper;
-
-    public CourseService(CourseRepository courseRepository, CourseMapper courseMapper) {
+    public CourseService(CourseRepository courseRepository, GroupRepository groupRepository, LecturerRepository lecturerRepository, ScheduleRepository scheduleRepository) {
         this.courseRepository = courseRepository;
-        this.courseMapper = courseMapper;
+        this.groupRepository = groupRepository;
+        this.lecturerRepository = lecturerRepository;
+        this.scheduleRepository = scheduleRepository;
+    }
+
+    public List<CourseDTO> getAllCourses() {
+        return courseRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Long addCourse(CourseDTO courseDTO) {
+        Course course = convertToEntity(courseDTO);
+        course = courseRepository.save(course);
+        return course.getId();
+    }
+
+    public CourseDTO getCourseById(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        return convertToDTO(course);
+    }
+
+    public void deleteCourseById(Long id) {
+        courseRepository.deleteById(id);
     }
 
     public int getWeeklyDuration(Long courseId) {
-        Course course = courseRepository.findById(courseId).orElse(null);
-        if (course == null) return -1;
-        return course.getCourseDuration() / SEMESTER_WEEKS; //Założenie, że semestr trwa 15 tygodni
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        if (course != null) {
+            return course.getCourseDuration() / SEMESTER_WEEKS; //Założenie, że semestr trwa 15 tygodni
+        }
+        return 0;
     }
 
     public boolean isCourseInSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
         if (schedule == null) return false; //TODO: do przemyślenia
         return schedule.getCourse().getIsScheduled();
     }
@@ -82,41 +101,6 @@ public class CourseService {
         return false;
     }
 
-
-    public CourseDTO createCourse(CourseDTO courseDTO) {
-        // Mapowanie DTO na encję
-        Course course = courseMapper.toCourse(courseDTO);
-
-        // Walidacje
-        if (course.getLecturer() == null) {
-            throw new IllegalArgumentException("Nie znaleziono takiego prowadzącego!");
-        }
-        if (course.getGroups() == null || course.getGroups().isEmpty()) {
-            throw new IllegalArgumentException("Nie znaleziono takiej grupy!");
-        }
-        if (course.getCourseDuration() <= 0) {
-            throw new IllegalArgumentException("Nie dodałeś długości trwania kursu!");
-        }
-
-        // Zapisanie do bazy
-        Course savedCourse = courseRepository.save(course);
-
-        // Zwrócenie DTO
-        return courseMapper.toCourseDTO(savedCourse);
-
-    }
-
-    public List<CourseDTO> getAllCourses() {
-        List<Course> courses = courseRepository.findAll();
-        return courseMapper.toCourseDTOList(courses);
-    }
-
-    public CourseDTO getCourseById(Long id) {
-        Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + id));
-        return courseMapper.toCourseDTO(course);
-    }
-
     public CourseDTO updateCourse(Long id, CourseDTO courseDTO) {
         Course existingCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + id));
@@ -124,7 +108,6 @@ public class CourseService {
         existingCourse.setName(courseDTO.getName());
         existingCourse.setIsScheduled(courseDTO.isScheduled());
         existingCourse.setCourseDuration(courseDTO.getCourseDuration());
-
         existingCourse.setStartTime(courseDTO.getStartTime() != null
                 ? LocalTime.parse(courseDTO.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"))
                 : null);
@@ -132,79 +115,62 @@ public class CourseService {
                 ? LocalTime.parse(courseDTO.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"))
                 : null);
 
-        Course updatedCourse = courseRepository.save(existingCourse);
-        return courseMapper.toCourseDTO(updatedCourse);
-    }
-
-    public ResponseEntity deleteCourse(Long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        if (course.isPresent()) {
-            courseRepository.deleteById(id);
+        if (courseDTO.getLecturerId() != null) {
+            Lecturer lecturer = lecturerRepository.findById(courseDTO.getLecturerId())
+                    .orElseThrow(() -> new RuntimeException("Lecturer not found"));
+            existingCourse.setLecturer(lecturer);
         }
-        return ResponseEntity.ok(course.orElseThrow(() -> new IllegalArgumentException("User not found")));
+
+        if (courseDTO.getGroupsIdList() != null) {
+            List<Group> groups = groupRepository.findAllById(courseDTO.getGroupsIdList());
+            existingCourse.setGroups(groups);
+        }
+
+        Course updatedCourse = courseRepository.save(existingCourse);
+        return convertToDTO(updatedCourse);
     }
-}
 
-
-@Component
-class CourseMapper {
-
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-    public CourseDTO toCourseDTO(Course course) {
-        Lecturer lecturer = course.getLecturer();
-        LecturerDTO lecturerDTO = new LecturerDTO(
-                lecturer.getId(),
-                lecturer.getFirstName(),
-                lecturer.getLastName(),
-                lecturer.getEmail()
-        );
-
-        List<GroupDTO> groupDTOList = course.getGroups().stream()
-                .map(group -> new GroupDTO(group.getId(), group.getName()))
-                .collect(Collectors.toList());
-
-        String startTime = course.getStartTime() != null ? course.getStartTime().format(TIME_FORMATTER) : null;
-        String endTime = course.getEndTime() != null ? course.getEndTime().format(TIME_FORMATTER) : null;
-
+    private CourseDTO convertToDTO(Course course) {
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
                 course.getIsScheduled(),
                 course.getCourseDuration(),
-                startTime,
-                endTime,
-                groupDTOList,
-                lecturerDTO
+                course.getStartTime() != null ? course.getStartTime().toString() : null,
+                course.getEndTime() != null ? course.getEndTime().toString() : null,
+                course.getGroups().stream().map(Group::getId).collect(Collectors.toList()),
+                course.getLecturer() != null ? course.getLecturer().getId() : null
         );
     }
 
-    public List<CourseDTO> toCourseDTOList(List<Course> courses) {
-        return courses.stream()
-                .map(this::toCourseDTO)
-                .collect(Collectors.toList());
-    }
-
-    public Course toCourse(CourseDTO courseDTO) {
-        LocalTime startTime = courseDTO.getStartTime() != null
-                ? LocalTime.parse(courseDTO.getStartTime(), TIME_FORMATTER)
-                : null;
-
-        LocalTime endTime = courseDTO.getEndTime() != null
-                ? LocalTime.parse(courseDTO.getEndTime(), TIME_FORMATTER)
-                : null;
-
-        // Tutaj ustaw resztę pól, np. poprzez wywołania repozytoriów, aby odnaleźć grupy i wykładowcę
+    private Course convertToEntity(CourseDTO courseDTO) {
         Course course = new Course();
+
         course.setId(courseDTO.getId());
         course.setName(courseDTO.getName());
-        course.setIsScheduled(courseDTO.isScheduled());
         course.setCourseDuration(courseDTO.getCourseDuration());
-        course.setStartTime(startTime);
-        course.setEndTime(endTime);
+        course.setIsScheduled(courseDTO.isScheduled());
 
-        // Ustaw grupy i wykładowcę, jeśli to wymagane
+        if (courseDTO.getStartTime() != null) {
+            course.setStartTime(LocalTime.parse(courseDTO.getStartTime()));
+        }
+        if (courseDTO.getEndTime() != null) {
+            course.setEndTime(LocalTime.parse(courseDTO.getEndTime()));
+        }
+
+        if (courseDTO.getLecturerId() != null) {
+            Lecturer lecturer = lecturerRepository.findById(courseDTO.getLecturerId())
+                    .orElseThrow(() -> new RuntimeException("Lecturer not found"));
+            course.setLecturer(lecturer);
+        }
+
+        if (courseDTO.getGroupsIdList() != null) {
+            List<Group> groups = groupRepository.findAllById(courseDTO.getGroupsIdList());
+            course.setGroups(groups);
+        }
 
         return course;
     }
+
+
 }
