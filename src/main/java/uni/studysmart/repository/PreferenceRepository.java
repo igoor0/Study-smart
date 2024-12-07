@@ -15,11 +15,4 @@ import java.util.List;
 public interface PreferenceRepository extends JpaRepository<Preference, Long> {
     List<Preference> findByStudent_GroupIdAndCourseId(Long groupId, Long courseId);
 
-    @Modifying
-    @Query("DELETE FROM Preference p WHERE p.dayOfWeek = :dayOfWeek " +
-            "AND (p.startTime < :endTime AND p.endTime > :startTime)")
-    void deletePreferencesBetweenAvailability(@Param("dayOfWeek") DayOfWeek dayOfWeek,
-                                              @Param("startTime") LocalTime startTime,
-                                              @Param("endTime") LocalTime endTime);
-
 }
