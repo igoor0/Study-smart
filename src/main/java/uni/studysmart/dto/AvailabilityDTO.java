@@ -12,5 +12,6 @@ public class AvailabilityDTO {
     private String dayOfWeek;
     private String startTime;
     private String endTime;
-    private LecturerDTO lecturer;
+    private Long lecturerId;
+
 }

@@ -1,95 +1,99 @@
 package uni.studysmart.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.AvailabilityDTO;
-import uni.studysmart.dto.LecturerDTO;
-import uni.studysmart.model.Availability;
-import uni.studysmart.model.Lecturer;
+import uni.studysmart.model.*;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.PreferenceRepository;
-import uni.studysmart.request.AvailabilityRequest;
 import uni.studysmart.utils.Utils;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class AvailabilityService {
 
-    @Autowired
-    private AvailabilityRepository availabilityRepository;
-    @Autowired
-    private LecturerRepository lecturerRepository;
-    @Autowired
-    private PreferenceRepository preferenceRepository;
-    @Autowired
-    private Utils utils;
+    private final AvailabilityRepository availabilityRepository;
+    private final LecturerRepository lecturerRepository;
+    private final PreferenceRepository preferenceRepository;
+    private final Utils utils;
 
-    public void addAvailability(AvailabilityRequest request) {
-        Lecturer lecturer = lecturerRepository.findById(request.getLecturerId())
-                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wykładowcy o podanym ID"));
+    public AvailabilityService(AvailabilityRepository availabilityRepository, LecturerRepository lecturerRepository, PreferenceRepository preferenceRepository, Utils utils) {
+        this.availabilityRepository = availabilityRepository;
+        this.lecturerRepository = lecturerRepository;
+        this.preferenceRepository = preferenceRepository;
+        this.utils = utils;
+    }
 
-        // Parse String times into LocalTime
-        LocalTime startTime;
-        LocalTime endTime;
-        try {
-            startTime = LocalTime.parse(request.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
-            endTime = LocalTime.parse(request.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"));
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid time format. Use hh:mm, e.g., 09:00", e);
-        }
 
+    public List<AvailabilityDTO> getAllAvailabilities() {
+        return availabilityRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    public Long addAvailability(AvailabilityDTO availabilityDTO) {
+        Availability availability = convertToEntity(availabilityDTO);
+        availability = availabilityRepository.save(availability);
+        return availability.getId();
+    }
+
+    public AvailabilityDTO getAvailabilityById(Long id) {
+        Availability availability = availabilityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Availability not found"));
+        return convertToDTO(availability);
+    }
+
+    public void deleteAvailability(Long id) {
+        deleteAllPreferencesBetweeenAvailability(id);
+        availabilityRepository.deleteById(id);
+    }
+
+    private void deleteAllPreferencesBetweeenAvailability(Long availabilityId) {
+        Availability availability = availabilityRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Availability not found - cannot delete preferences at that period"));
+        DayOfWeek dayOfWeek = availability.getDayOfWeek();
+        LocalTime startTime = availability.getStartTime();
+        LocalTime endTime = availability.getEndTime();
+
+        preferenceRepository.deletePreferencesBetweenAvailability(dayOfWeek, startTime, endTime);
+    }
+
+    private AvailabilityDTO convertToDTO(Availability availability) {
+        return new AvailabilityDTO(
+                availability.getId(),
+                availability.getDayOfWeek() != null ? availability.getDayOfWeek().toString() : null,
+                availability.getStartTime() != null ? availability.getStartTime().toString() : null,
+                availability.getEndTime() != null ? availability.getEndTime().toString() : null,
+                availability.getLecturer() != null ? availability.getLecturer().getId() : null
+        );
+    }
+
+    private Availability convertToEntity(AvailabilityDTO availabilityDTO) {
         Availability availability = new Availability();
-        availability.setDayOfWeek(request.getDayOfWeek());
-        availability.setStartTime(startTime);
-        availability.setEndTime(endTime);
-        availability.setLecturer(lecturer);
-        availabilityRepository.save(availability);
-    }
 
-    public ResponseEntity<List<AvailabilityDTO>> getAllAvailabilities() {
-        List<Availability> availabilities = availabilityRepository.findAll();
-        List<AvailabilityDTO> availabilityDTOs = availabilities.stream().map(availability -> {
-            Lecturer lecturer = availability.getLecturer();
-            LecturerDTO lecturerDTO = new LecturerDTO(
-                    lecturer.getId(),
-                    lecturer.getFirstName(),
-                    lecturer.getLastName(),
-                    lecturer.getEmail()
-            );
-            return new AvailabilityDTO(
-                    availability.getId(),
-                    availability.getDayOfWeek().name(),
-                    availability.getStartTime().toString(),
-                    availability.getEndTime().toString(),
-                    lecturerDTO
-            );
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.ok(availabilityDTOs);
-    }
-
-    public ResponseEntity<Availability> getAvailabilityById(Long id) {
-        Optional<Availability> availability = availabilityRepository.findById(id);
-        return ResponseEntity.ok(availability.orElseThrow(() -> new IllegalArgumentException("Availibility not found")));
-    }
-
-
-    public ResponseEntity deleteAvailability(Long id) {
-        Optional<Availability> availability = availabilityRepository.findById(id);
-
-        if (availability.isPresent()) {
-            utils.deleteAllPreferencesBetweeenAvailability(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));
-            availabilityRepository.delete(availability.get());
+        availability.setId(availabilityDTO.getId());
+        if (availabilityDTO.getDayOfWeek() != null) {
+            availability.setDayOfWeek(DayOfWeek.valueOf(availabilityDTO.getDayOfWeek().toUpperCase()));
         }
-        return ResponseEntity.ok(availability.orElseThrow(() -> new IllegalArgumentException("Availability not found")));
+        if (availabilityDTO.getStartTime() != null) {
+            availability.setStartTime(LocalTime.parse(availabilityDTO.getStartTime()));
+        }
+        if (availabilityDTO.getEndTime() != null) {
+            availability.setEndTime(LocalTime.parse(availabilityDTO.getEndTime()));
+        }
+
+        if (availabilityDTO.getLecturerId() != null) {
+            Lecturer lecturer = lecturerRepository.findById(availabilityDTO.getLecturerId())
+                    .orElseThrow(() -> new RuntimeException("Lecturer not found"));
+            availability.setLecturer(lecturer);
+        }
+
+        return availability;
     }
 }
 

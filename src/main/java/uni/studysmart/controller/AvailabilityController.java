@@ -1,6 +1,7 @@
 package uni.studysmart.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.dto.AvailabilityDTO;
@@ -14,29 +15,34 @@ import java.util.List;
 @RequestMapping("/api/availabilities")
 public class AvailabilityController {
 
-    @Autowired
-    private AvailabilityService availabilityService;
+    private final AvailabilityService availabilityService;
+
+    public AvailabilityController(AvailabilityService availabilityService) {
+        this.availabilityService = availabilityService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<AvailabilityDTO>> getAvailability() {
-        return availabilityService.getAllAvailabilities();
+    public ResponseEntity<List<AvailabilityDTO>> getAvailabilities() {
+        List<AvailabilityDTO> availibilityDTOList = availabilityService.getAllAvailabilities();
+        return ResponseEntity.ok(availibilityDTOList);
     }
-    @PostMapping("/add")
-    public ResponseEntity<String> addAvailability(@RequestBody AvailabilityRequest availabilityRequest) {
-        try {
-            availabilityService.addAvailability(availabilityRequest);
-            return ResponseEntity.ok("Dostępność dodana pomyślnie");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Błąd podczas dodawania dostępności: " + e.getMessage());
-        }
+
+    @PostMapping
+    public ResponseEntity<Long> createAvailability(@RequestBody AvailabilityDTO availabilityDTO) {
+        Long createdId = availabilityService.addAvailability(availabilityDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Availability> getAvailabilityById(@PathVariable Long id) {
-        return availabilityService.getAvailabilityById(id);
+    public ResponseEntity<AvailabilityDTO> getAvailabilityById(@PathVariable Long id) {
+        AvailabilityDTO availabilityDTO = availabilityService.getAvailabilityById(id);
+        return ResponseEntity.ok(availabilityDTO);
     }
-    @DeleteMapping("/id")
-    public ResponseEntity deleteAvailability(@PathVariable Long id) {
-        return ResponseEntity.ok(availabilityService.deleteAvailability(id));
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAvailability(@PathVariable Long id) {
+        availabilityService.deleteAvailability(id);
+        return ResponseEntity.noContent().build();
     }
 }
 
