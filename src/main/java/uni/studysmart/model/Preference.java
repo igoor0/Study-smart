@@ -8,11 +8,12 @@ import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="preferences")
+@Entity(name = "preferences")
 public class Preference {
 
     @Id

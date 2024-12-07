@@ -5,9 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
