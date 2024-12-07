@@ -46,18 +46,18 @@ public class AvailabilityService {
     }
 
     public void deleteAvailability(Long id) {
-        deleteAllPreferencesBetweeenAvailability(id);
+        deleteAllPreferencesBetweenAvailability(id);
         availabilityRepository.deleteById(id);
     }
 
-    private void deleteAllPreferencesBetweeenAvailability(Long availabilityId) {
+    private void deleteAllPreferencesBetweenAvailability(Long availabilityId) {
         Availability availability = availabilityRepository.findById(availabilityId)
                 .orElseThrow(() -> new RuntimeException("Availability not found - cannot delete preferences at that period"));
         DayOfWeek dayOfWeek = availability.getDayOfWeek();
         LocalTime startTime = availability.getStartTime();
         LocalTime endTime = availability.getEndTime();
-
-        preferenceRepository.deletePreferencesBetweenAvailability(dayOfWeek, startTime, endTime);
+        //TODO PRZEROBIC TA METODE BO NIE DZIALA
+        //preferenceRepository.deletePreferencesBetweenAvailability(dayOfWeek, startTime, endTime);
     }
 
     private AvailabilityDTO convertToDTO(Availability availability) {
