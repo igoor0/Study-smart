@@ -1,78 +1,94 @@
 package uni.studysmart.service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uni.studysmart.model.Preference;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import uni.studysmart.model.Student;
 import uni.studysmart.repository.PreferenceRepository;
 import uni.studysmart.repository.StudentRepository;
 import uni.studysmart.model.Course;
 import uni.studysmart.repository.CourseRepository;
-import uni.studysmart.request.PreferenceDTO;
+import uni.studysmart.dto.PreferenceDTO;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
 public class PreferenceService {
 
-    @Autowired
-    private PreferenceRepository preferenceRepository;
+    private final PreferenceRepository preferenceRepository;
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    private StudentRepository studentRepository;
+    public PreferenceService(PreferenceRepository preferenceRepository, StudentRepository studentRepository, CourseRepository courseRepository) {
+        this.preferenceRepository = preferenceRepository;
+        this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
+    }
 
-    @Autowired
-    private CourseRepository courseRepository;
+    public List<PreferenceDTO> getAllPreferences() {
+        return preferenceRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
-    public void addPreference(PreferenceDTO preferenceRequest) {
-        Student student = studentRepository.findById(preferenceRequest.getStudentId())
-                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+    public Long addPreference(PreferenceDTO preferenceDTO) {
+        Preference preference = convertToEntity(preferenceDTO);
+        preference = preferenceRepository.save(preference);
+        return preference.getId();
+    }
 
-        Course course = courseRepository.findById(preferenceRequest.getCourseId())
-                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+    public PreferenceDTO getPreferenceById(Long id) {
+        Preference preference = preferenceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Preference not found"));
+        return convertToDTO(preference);
+    }
 
-        // Parse String times into LocalTime
-        LocalTime startTime;
-        LocalTime endTime;
+    public void deletePreferenceById(Long id) {
+        preferenceRepository.deleteById(id);
+    }
 
-        try {
-            startTime = LocalTime.parse(preferenceRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
-            endTime = LocalTime.parse(preferenceRequest.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"));
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid time format. Use hh:mm, e.g., 09:00", e);
-        }
+    private PreferenceDTO convertToDTO(Preference preference) {
+        return new PreferenceDTO(
+                preference.getId(),
+                preference.getDayOfWeek() != null ? preference.getDayOfWeek().toString() : null,
+                preference.getStartTime() != null ? preference.getStartTime().toString() : null,
+                preference.getEndTime() != null ? preference.getEndTime().toString() : null,
+                preference.getStudent() != null ? preference.getStudent().getId() : null,
+                preference.getCourse() != null ? preference.getCourse().getId() : null
+        );
+    }
+
+    private Preference convertToEntity(PreferenceDTO preferenceDTO) {
         Preference preference = new Preference();
-        preference.setStudent(student);
-        preference.setCourse(course);
-        preference.setDayOfWeek(preferenceRequest.getDayOfWeek());
-        preference.setStartTime(startTime);
-        preference.setEndTime(endTime);
 
-        preferenceRepository.save(preference);
-    }
-    public ResponseEntity<List<Preference>> getAllPreferences() {
-        List<Preference> preferences = preferenceRepository.findAll();
-        return ResponseEntity.ok(preferences);
-    }
-
-    public ResponseEntity<Preference> getPreferenceById(Long id) {
-        Optional<Preference> preference = preferenceRepository.findById(id);
-        return ResponseEntity.ok(preference.orElseThrow(() -> new IllegalArgumentException("Preference not found")));
-    }
-
-    public ResponseEntity<Preference> deletePreferenceById(Long id) {
-        Optional<Preference> preference = preferenceRepository.findById(id);
-        if (preference.isPresent()) {
-            preferenceRepository.deleteById(id);
+        preference.setId(preferenceDTO.getId());
+        if (preferenceDTO.getDayOfWeek() != null) {
+            preference.setDayOfWeek(DayOfWeek.valueOf(preferenceDTO.getDayOfWeek().toUpperCase()));
         }
-        return ResponseEntity.ok(preference.orElseThrow(() -> new IllegalArgumentException("Preference not found")));
+        if (preferenceDTO.getStartTime() != null) {
+            preference.setStartTime(LocalTime.parse(preferenceDTO.getStartTime()));
+        }
+        if (preferenceDTO.getEndTime() != null) {
+            preference.setEndTime(LocalTime.parse(preferenceDTO.getEndTime()));
+        }
+
+        if (preferenceDTO.getStudentId() != null) {
+            Student student = studentRepository.findById(preferenceDTO.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+            preference.setStudent(student);
+        }
+
+        if (preferenceDTO.getCourseId() != null) {
+            Course course = courseRepository.findById(preferenceDTO.getCourseId())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+            preference.setCourse(course);
+        }
+
+        return preference;
     }
 }
 

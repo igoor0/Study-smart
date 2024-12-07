@@ -1,13 +1,12 @@
 package uni.studysmart.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import uni.studysmart.model.Preference;
-import uni.studysmart.request.PreferenceDTO;
+import uni.studysmart.dto.PreferenceDTO;
 import uni.studysmart.service.PreferenceService;
 
 import java.util.List;
@@ -16,27 +15,34 @@ import java.util.List;
 @RequestMapping("/api/preferences")
 public class PreferenceController {
 
-    @Autowired
-    private PreferenceService preferenceService;
+    private final PreferenceService preferenceService;
+
+    public PreferenceController(PreferenceService preferenceService) {
+        this.preferenceService = preferenceService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<Preference>> getAllPreferences() {
-        return preferenceService.getAllPreferences();
+    public ResponseEntity<List<PreferenceDTO>> getAllPreferences() {
+        List<PreferenceDTO> preferenceDTOList = preferenceService.getAllPreferences();
+        return ResponseEntity.ok(preferenceDTOList);
     }
 
     @PostMapping
-    public ResponseEntity<String> addPreference(@RequestBody PreferenceDTO preference) {
-        preferenceService.addPreference(preference);
-        return ResponseEntity.ok("Preferencja dodana pomyślnie");
+    public ResponseEntity<Long> createPreference(@RequestBody PreferenceDTO preferenceDTO) {
+        Long createdId = preferenceService.addPreference(preferenceDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Preference> getPreferenceById(@PathVariable Long id) {
-        return preferenceService.getPreferenceById(id);
+    public ResponseEntity<PreferenceDTO> getPreferenceById(@PathVariable Long id) {
+        PreferenceDTO preferenceDTO = preferenceService.getPreferenceById(id);
+        return ResponseEntity.ok(preferenceDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletePreferenceById(@PathVariable Long id) {
-        return ResponseEntity.ok(preferenceService.deletePreferenceById(id));
+    public ResponseEntity<Void> deletePreferenceById(@PathVariable Long id) {
+        preferenceService.deletePreferenceById(id);
+        return ResponseEntity.noContent().build();
     }
+
 }
