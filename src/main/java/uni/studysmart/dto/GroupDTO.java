@@ -1,14 +1,13 @@
 package uni.studysmart.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GroupDTO {
     private Long id;
     private String groupName;
 
-    public GroupDTO(Long id, String name) {
-    }
 }
