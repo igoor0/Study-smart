@@ -44,9 +44,8 @@ public class GroupService {
         return new GroupDTO(
                 group.getId(),
                 group.getName(),
-                group.getStudents().stream().map(Student::getId).collect(Collectors.toList()),
-                group.getCourses().getId()
-
+                group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null,
+                group.getCourse() != null ? group.getCourse().getId() : null
         );
     }
 

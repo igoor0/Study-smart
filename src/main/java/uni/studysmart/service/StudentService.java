@@ -39,8 +39,8 @@ public class StudentService {
         return new StudentDTO(
                 student.getIndexNumber(),
                 student.getMajor(),
-                student.getGroup().getId(),
-                student.getPreferences().stream().map(Preference::getId).collect(Collectors.toList())
+                student.getGroup() != null ? student.getGroup().getId() : null,
+                student.getPreferences() != null ? student.getPreferences().stream().map(Preference::getId).collect(Collectors.toList()) : null
         );
     }
 }

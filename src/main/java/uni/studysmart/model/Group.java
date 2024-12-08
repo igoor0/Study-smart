@@ -19,6 +19,6 @@ public class Group {
     private List<Student> students;
 
     @ManyToOne
-    private Course courses;
+    private Course course;
 }
 

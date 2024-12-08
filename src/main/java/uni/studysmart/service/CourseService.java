@@ -134,7 +134,7 @@ public class CourseService {
                 course.getCourseDuration(),
                 course.getStartTime() != null ? course.getStartTime().toString() : null,
                 course.getEndTime() != null ? course.getEndTime().toString() : null,
-                course.getGroups().stream().map(Group::getId).collect(Collectors.toList()),
+                course.getGroups() != null ? course.getGroups().stream().map(Group::getId).collect(Collectors.toList()) : null,
                 course.getLecturer() != null ? course.getLecturer().getId() : null
         );
     }
