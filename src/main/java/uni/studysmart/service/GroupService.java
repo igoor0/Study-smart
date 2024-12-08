@@ -45,7 +45,7 @@ public class GroupService {
                 group.getId(),
                 group.getName(),
                 group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null,
-                group.getCourse() != null ? group.getCourse().getId() : null
+                group.getCourses() != null ? group.getCourses().getId() : null
         );
     }
 
