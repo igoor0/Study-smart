@@ -7,7 +7,6 @@ import uni.studysmart.model.Lecturer;
 import uni.studysmart.repository.LecturerRepository;
 
 @Service
-@RequiredArgsConstructor
 public class LecturerService {
 
     private final LecturerRepository lecturerRepository;
