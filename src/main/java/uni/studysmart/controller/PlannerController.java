@@ -6,19 +6,19 @@ import org.springframework.web.bind.annotation.*;
 import uni.studysmart.service.PlannerService;
 
 @RestController
-@RequestMapping("api/planner")
+@RequestMapping("api/planners")
 public class PlannerController {
 
     @Autowired
     private PlannerService plannerService;
 
-    @PostMapping("/addStudentToGroup")
-    public ResponseEntity<String> addStudentToGroup(@RequestParam Long studentId, @RequestParam Long groupId) {
+    @PostMapping("/add/{studentId}/to/{groupId}")
+    public ResponseEntity<String> addStudentToGroup(@PathVariable Long studentId, @PathVariable Long groupId) {
         return plannerService.addStudentToGroup(studentId, groupId);
     }
 
     @PutMapping("/removeStudentFromGroup")
-    public ResponseEntity<String> removeStudentFromGroup(@RequestParam Long studentId, @RequestParam Long groupId) {
+    public ResponseEntity<String> deleteStudentFromGroup(@RequestParam Long studentId, @RequestParam Long groupId) {
         return plannerService.removeStudentFromGroup(studentId, groupId);
     }
 
@@ -28,7 +28,7 @@ public class PlannerController {
     }
 
     @PutMapping("/removeLecturerFromCourse")
-    public ResponseEntity<String> removeLecturerFromCourse(@RequestParam Long courseId) {
+    public ResponseEntity<String> deleteLecturerFromCourse(@RequestParam Long courseId) {
         return plannerService.removeLecturerFromCourse(courseId);
     }
 
@@ -38,7 +38,7 @@ public class PlannerController {
     }
 
     @PutMapping("/removeGroupFromCourse")
-    public ResponseEntity<String> removeGroupFromCourse(@RequestParam Long courseId, @RequestParam Long groupId) {
+    public ResponseEntity<String> deleteGroupFromCourse(@RequestParam Long courseId, @RequestParam Long groupId) {
         return plannerService.removeGroupFromCourse(courseId, groupId);
     }
 

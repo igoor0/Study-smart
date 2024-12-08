@@ -3,6 +3,7 @@ package uni.studysmart.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uni.studysmart.dto.GroupDTO;
 import uni.studysmart.model.Course;
 import uni.studysmart.model.Group;
 import uni.studysmart.model.Lecturer;
@@ -15,23 +16,22 @@ import uni.studysmart.repository.StudentRepository;
 @Service
 public class PlannerService {
 
-    @Autowired
-    private GroupService groupService;
+    private final GroupService groupService;
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
+    private final LecturerRepository lecturerRepository;
+    private final GroupRepository groupRepository;
 
-    @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
-    private LecturerRepository lecturerRepository;
-
-    @Autowired
-    private GroupRepository groupRepository;
+    public PlannerService(GroupService groupService, StudentRepository studentRepository, CourseRepository courseRepository, LecturerRepository lecturerRepository, GroupRepository groupRepository) {
+        this.groupService = groupService;
+        this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
+        this.lecturerRepository = lecturerRepository;
+        this.groupRepository = groupRepository;
+    }
 
     public ResponseEntity<String> addStudentToGroup(Long studentId, Long groupId) {
-        Group group = groupService.getGroupById(groupId);
+        Group group = groupRepository.findById(groupId).orElse(null);
         if (group == null) {
             return ResponseEntity.notFound().build();
         }
@@ -47,7 +47,7 @@ public class PlannerService {
     }
 
     public ResponseEntity<String> removeStudentFromGroup(Long studentId, Long groupId) {
-        Group group = groupService.getGroupById(groupId);
+        Group group = groupRepository.findById(groupId).orElse(null);
         if (group == null) {
             return ResponseEntity.notFound().build();
         }
@@ -63,7 +63,7 @@ public class PlannerService {
     }
 
     public ResponseEntity<String> addGroupToCourse(Long courseId, Long groupId) {
-        Group group = groupService.getGroupById(groupId);
+        Group group = groupRepository.findById(groupId).orElse(null);
         if (group == null) {
             return ResponseEntity.notFound().build();
         }
@@ -77,7 +77,7 @@ public class PlannerService {
     }
 
     public ResponseEntity<String> removeGroupFromCourse(Long courseId, Long groupId) {
-        Group group = groupService.getGroupById(groupId);
+        Group group = groupRepository.findById(groupId).orElse(null);
         if (group == null) {
             return ResponseEntity.notFound().build();
         }
@@ -117,11 +117,8 @@ public class PlannerService {
     }
 
 
-
     //TODO CRUD DO SCHEDULE
     //TODO ADD - CALEGO CRUDA COURSES WYSYLA REQUEST TUTAJ TEN
-
-
 
 
 }
