@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.dto.GroupDTO;
-import uni.studysmart.model.Group;
-import uni.studysmart.request.GroupRequest;
 import uni.studysmart.service.GroupService;
 
 import java.util.List;
@@ -17,10 +15,8 @@ import java.util.List;
 @RequestMapping("/api/groups")
 public class GroupController {
 
-    //TODO FIX SERVICE
     private final GroupService groupService;
 
-    @Autowired
     public GroupController(GroupService groupService) {
         this.groupService = groupService;
     }
