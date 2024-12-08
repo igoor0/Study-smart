@@ -1,12 +1,10 @@
 package uni.studysmart.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.GroupDTO;
 import uni.studysmart.model.Group;
+import uni.studysmart.model.Student;
 import uni.studysmart.repository.GroupRepository;
-import uni.studysmart.request.GroupRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,14 +43,17 @@ public class GroupService {
     private GroupDTO convertToDTO(Group group) {
         return new GroupDTO(
                 group.getId(),
-                group.getName()
+                group.getName(),
+                group.getStudents().stream().map(Student::getId).collect(Collectors.toList()),
+                group.getCourses().getId()
+
         );
     }
 
     private Group convertToEntity(GroupDTO groupDTO) {
         Group group = new Group();
         group.setId(groupDTO.getId());
-        group.setName(groupDTO.getGroupName());
+        group.setName(groupDTO.getName());
 
         return group;
     }

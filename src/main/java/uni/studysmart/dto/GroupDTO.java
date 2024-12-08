@@ -2,12 +2,17 @@ package uni.studysmart.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class GroupDTO {
     private Long id;
-    private String groupName;
+    private String name;
+    private List<Long> studentIdList;
+    private Long courseId;
 
 }
