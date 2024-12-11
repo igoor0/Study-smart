@@ -10,11 +10,12 @@ public class ApiException {
     private final String message;
     private final HttpStatus httpStatus;
     private final ZonedDateTime timestamp;
+    private final String errorCode;
 
-    public ApiException(String message, HttpStatus httpStatus, ZonedDateTime timestamp) {
+    public ApiException(String message, HttpStatus httpStatus, ZonedDateTime timestamp, String errorCode) {
         this.message = message;
         this.httpStatus = httpStatus;
         this.timestamp = timestamp;
+        this.errorCode = errorCode;
     }
-
 }
