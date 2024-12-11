@@ -18,7 +18,7 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Boolean isScheduled; // Czy dany kurs jest już zaplanowany (posiada już wybrane godziny w tygodniu) TODO: czy jest to odpowiednie miejsce na taką zmienną?
+    private Boolean isScheduled = false; // Czy dany kurs jest już zaplanowany (posiada już wybrane godziny w tygodniu) TODO: czy jest to odpowiednie miejsce na taką zmienną?
     private Integer courseDuration;
     private LocalTime startTime;  // Godzina rozpoczęcia danego kursu
     private LocalTime endTime;  // Godzina zakończenia danego kursu
