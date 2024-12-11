@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Boolean isScheduled = false; // Czy dany kurs jest już zaplanowany (posiada już wybrane godziny w tygodniu) TODO: czy jest to odpowiednie miejsce na taką zmienną?
+    private Boolean isScheduled = false; // Czy dany kurs jest już zaplanowany (posiada już wybrane godziny w tygodniu)
     private Integer courseDuration;
     private LocalTime startTime;  // Godzina rozpoczęcia danego kursu
     private LocalTime endTime;  // Godzina zakończenia danego kursu
