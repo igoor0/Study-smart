@@ -47,6 +47,7 @@ public class GroupService {
 
     private GroupDTO convertToDTO(Group group) {
         return new GroupDTO(
+                group.getId(),
                 group.getName(),
                 group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null
         );
