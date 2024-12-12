@@ -78,7 +78,9 @@ public class GroupService {
 
         existingGroup.setName(groupDTO.getName());
 
-        List<Student> students = groupDTO.getStudentIdList().stream()
+        List<Long> studentIdList = groupDTO.getStudentIdList() != null ? groupDTO.getStudentIdList() : List.of();
+
+        List<Student> students = studentIdList.stream()
                 .map(studentId -> studentRepository.findById(studentId)
                         .orElseThrow(() -> new ApiRequestException("Student with ID " + studentId + " not found")))
                 .collect(Collectors.toList());
