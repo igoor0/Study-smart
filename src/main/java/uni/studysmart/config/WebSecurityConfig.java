@@ -35,6 +35,8 @@ public class WebSecurityConfig {
         requestHandler.setCsrfRequestAttributeName(null);
         httpSecurity.authorizeHttpRequests(
                         auth -> auth
+                                .requestMatchers("/api/auth/confirmLecturer/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/auth/addPlanner/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("swagger-ui/**").permitAll()
                                 .requestMatchers("v3/api-docs/**").permitAll()
