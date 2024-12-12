@@ -2,6 +2,7 @@ package uni.studysmart.service;
 
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.AvailabilityDTO;
+import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.*;
 import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
@@ -42,7 +43,7 @@ public class AvailabilityService {
 
     public AvailabilityDTO getAvailabilityById(Long id) {
         Availability availability = availabilityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Availability not found"));
+                .orElseThrow(() -> new ApiRequestException("Availability not found"));
         return convertToDTO(availability);
     }
 
@@ -53,7 +54,7 @@ public class AvailabilityService {
 
     private void deleteAllPreferencesBetweenAvailability(Long availabilityId) {
         Availability availability = availabilityRepository.findById(availabilityId)
-                .orElseThrow(() -> new RuntimeException("Availability not found - cannot delete preferences at that period"));
+                .orElseThrow(() -> new ApiRequestException("Availability not found - cannot delete preferences at that period"));
         DayOfWeek dayOfWeek = availability.getDayOfWeek();
         LocalTime startTime = availability.getStartTime();
         LocalTime endTime = availability.getEndTime();
@@ -87,7 +88,7 @@ public class AvailabilityService {
 
         if (availabilityDTO.getLecturerId() != null) {
             Lecturer lecturer = lecturerRepository.findById(availabilityDTO.getLecturerId())
-                    .orElseThrow(() -> new RuntimeException("Lecturer not found"));
+                    .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
             availability.setLecturer(lecturer);
         }
 

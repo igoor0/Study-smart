@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.UserDTO;
+import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.user.User;
 import uni.studysmart.repository.UserRepository;
 
@@ -27,7 +28,7 @@ public class UserService {
 
     public UserDTO getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ApiRequestException("User not found"));
         return mapToUserDTO(user);
     }
 
@@ -46,6 +47,6 @@ public class UserService {
         if (user1.isPresent()) {
             userRepository.deleteById(user);
         }
-        return ResponseEntity.ok(user1.orElseThrow(() -> new IllegalArgumentException("User not found")));
+        return ResponseEntity.ok(user1.orElseThrow(() -> new ApiRequestException("User not found")));
     }
 }

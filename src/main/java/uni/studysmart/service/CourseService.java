@@ -3,6 +3,7 @@ package uni.studysmart.service;
 
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.*;
+import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.*;
 import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.CourseRepository;
@@ -51,7 +52,7 @@ public class CourseService {
 
     public CourseDTO getCourseById(Long id) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new ApiRequestException("Course not found"));
         return convertToDTO(course);
     }
 
@@ -61,7 +62,7 @@ public class CourseService {
 
     public int getWeeklyDuration(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new ApiRequestException("Course not found"));
         if (course != null) {
             return course.getCourseDuration() / SEMESTER_WEEKS; //Założenie, że semestr trwa 15 tygodni
         }
@@ -70,7 +71,7 @@ public class CourseService {
 
     public boolean isCourseInSchedule(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+                .orElseThrow(() -> new ApiRequestException("Schedule not found"));
         if (schedule == null) return false; //TODO: do przemyślenia
         return schedule.getCourse().getIsScheduled();
     }
@@ -100,7 +101,7 @@ public class CourseService {
 
     public CourseDTO updateCourse(Long id, CourseDTO courseDTO) {
         Course existingCourse = courseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + id));
+                .orElseThrow(() -> new ApiRequestException("Course not found with id: " + id));
 
         existingCourse.setName(courseDTO.getName());
         existingCourse.setIsScheduled(courseDTO.isScheduled());
@@ -114,7 +115,7 @@ public class CourseService {
 
         if (courseDTO.getLecturerId() != null) {
             Lecturer lecturer = lecturerRepository.findById(courseDTO.getLecturerId())
-                    .orElseThrow(() -> new RuntimeException("Lecturer not found"));
+                    .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
             existingCourse.setLecturer(lecturer);
         }
 
@@ -152,7 +153,7 @@ public class CourseService {
 
         if (courseDTO.getLecturerId() != null) {
             Lecturer lecturer = lecturerRepository.findById(courseDTO.getLecturerId())
-                    .orElseThrow(() -> new RuntimeException("Lecturer not found"));
+                    .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
             course.setLecturer(lecturer);
         }
 

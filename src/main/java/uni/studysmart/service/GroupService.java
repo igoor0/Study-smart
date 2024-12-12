@@ -2,6 +2,7 @@ package uni.studysmart.service;
 
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.GroupDTO;
+import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.Group;
 import uni.studysmart.model.user.Student;
 import uni.studysmart.repository.GroupRepository;
@@ -36,7 +37,7 @@ public class GroupService {
 
     public GroupDTO getGroupById(Long id) {
         Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Group not found"));
+                .orElseThrow(() -> new ApiRequestException("Group not found"));
         return convertToDTO(group);
     }
 

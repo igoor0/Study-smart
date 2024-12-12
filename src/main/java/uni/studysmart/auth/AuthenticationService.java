@@ -116,6 +116,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+
     }
 
     public AuthenticationResponse registerStudent(StudentRegisterRequest request) {

@@ -1,6 +1,7 @@
 package uni.studysmart.service;
 
 import org.springframework.stereotype.Service;
+import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.Preference;
 
 import uni.studysmart.model.user.Student;
@@ -43,7 +44,7 @@ public class PreferenceService {
 
     public PreferenceDTO getPreferenceById(Long id) {
         Preference preference = preferenceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Preference not found"));
+                .orElseThrow(() -> new ApiRequestException("Preference not found"));
         return convertToDTO(preference);
     }
 
@@ -78,13 +79,13 @@ public class PreferenceService {
 
         if (preferenceDTO.getStudentId() != null) {
             Student student = studentRepository.findById(preferenceDTO.getStudentId())
-                    .orElseThrow(() -> new RuntimeException("Student not found"));
+                    .orElseThrow(() -> new ApiRequestException("Student not found"));
             preference.setStudent(student);
         }
 
         if (preferenceDTO.getCourseId() != null) {
             Course course = courseRepository.findById(preferenceDTO.getCourseId())
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
+                    .orElseThrow(() -> new ApiRequestException("Course not found"));
             preference.setCourse(course);
         }
 

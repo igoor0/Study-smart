@@ -36,4 +36,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(apiException, internalServerError);
     }
+
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<Object> handleException(Exception e) {
+        HttpStatus internalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                internalServerError,
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                "EXCEPTION"
+
+        );
+        return new ResponseEntity<>(apiException, internalServerError);
+    }
 }
