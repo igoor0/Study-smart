@@ -65,4 +65,20 @@ public class GroupService {
         group.setStudents(students);
         return group;
     }
+
+    public Long updateGroup(GroupDTO groupDTO) {
+        Group existingGroup = groupRepository.findById(groupDTO.getId())
+                .orElseThrow(() -> new ApiRequestException("Group with ID " + groupDTO.getId() + " not found"));
+
+        existingGroup.setName(groupDTO.getName());
+
+        List<Student> students = groupDTO.getStudentIdList().stream()
+                .map(studentId -> studentRepository.findById(studentId)
+                        .orElseThrow(() -> new ApiRequestException("Student with ID " + studentId + " not found")))
+                .collect(Collectors.toList());
+
+        existingGroup.setStudents(students);
+        Group updatedGroup = groupRepository.save(existingGroup);
+        return updatedGroup.getId();
+    }
 }

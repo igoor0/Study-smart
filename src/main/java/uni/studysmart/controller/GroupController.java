@@ -32,6 +32,11 @@ public class GroupController {
         Long createdId = groupService.addGroup(groupDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
+    @PutMapping
+    public ResponseEntity<Long> updateGroup(@RequestBody GroupDTO groupDTO) {
+        Long updatedGroupId = groupService.updateGroup(groupDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedGroupId);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> getGroupById(@PathVariable Long id) {
