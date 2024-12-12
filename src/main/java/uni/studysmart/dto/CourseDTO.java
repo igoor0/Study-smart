@@ -15,5 +15,7 @@ public class CourseDTO {
     private String endTime;
     private Long lecturerId;
 
-    // Konstruktor, gettery i settery
+    public CourseDTO(String mathematics, boolean b, int i, String time, String time1, long l) {
+    }
+
 }

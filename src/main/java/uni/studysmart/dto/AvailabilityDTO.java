@@ -14,4 +14,6 @@ public class AvailabilityDTO {
     private String endTime;
     private Long lecturerId;
 
+    public AvailabilityDTO(String monday, String time, String time1, long l) {
+    }
 }

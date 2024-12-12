@@ -12,4 +12,7 @@ public class LecturerRegisterRequest extends RegisterRequest {
     private String title;
     private String classRoom;
     private String officeNumber;
+
+    public LecturerRegisterRequest(String anna, String nowak, String mail, String password, String informatics, String s, String a1, String number) {
+    }
 }

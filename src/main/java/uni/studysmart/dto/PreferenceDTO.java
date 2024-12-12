@@ -15,4 +15,7 @@ public class PreferenceDTO {
     private String endTime;
     private Long studentId;
     private Long courseId;
+
+    public PreferenceDTO(String monday, String time, String time1, long l, long l1) {
+    }
 }
