@@ -3,7 +3,7 @@ package uni.studysmart.service;
 import org.springframework.stereotype.Service;
 import uni.studysmart.model.Preference;
 
-import uni.studysmart.model.Student;
+import uni.studysmart.model.user.Student;
 import uni.studysmart.repository.PreferenceRepository;
 import uni.studysmart.repository.StudentRepository;
 import uni.studysmart.model.Course;
