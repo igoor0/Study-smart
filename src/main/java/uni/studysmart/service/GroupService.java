@@ -66,9 +66,9 @@ public class GroupService {
         return group;
     }
 
-    public Long updateGroup(GroupDTO groupDTO) {
-        Group existingGroup = groupRepository.findById(groupDTO.getId())
-                .orElseThrow(() -> new ApiRequestException("Group with ID " + groupDTO.getId() + " not found"));
+    public Long updateGroup(Long id, GroupDTO groupDTO) {
+        Group existingGroup = groupRepository.findById(id)
+                .orElseThrow(() -> new ApiRequestException("Group with ID " + id + " not found"));
 
         existingGroup.setName(groupDTO.getName());
 
