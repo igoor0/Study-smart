@@ -56,11 +56,14 @@ public class GroupService {
     private Group convertToEntity(GroupDTO groupDTO) {
         Group group = new Group();
         group.setName(groupDTO.getName());
-        List<Student> students = groupDTO.getStudentIdList().stream()
+
+        List<Student> students = (groupDTO.getStudentIdList() != null)
+                ? groupDTO.getStudentIdList().stream()
                 .map(studentRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : List.of();
 
         group.setStudents(students);
         return group;
