@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.dto.AvailabilityDTO;
+import uni.studysmart.model.Availability;
 import uni.studysmart.service.AvailabilityService;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public class AvailabilityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AvailabilityDTO>> getAvailabilities() {
-        List<AvailabilityDTO> availibilityDTOList = availabilityService.getAllAvailabilities();
+    public ResponseEntity<List<Availability>> getAvailabilities() {
+        List<Availability> availibilityDTOList = availabilityService.getAllAvailabilities();
         return ResponseEntity.ok(availibilityDTOList);
     }
 

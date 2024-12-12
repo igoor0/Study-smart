@@ -28,10 +28,8 @@ public class AvailabilityService {
     }
 
 
-    public List<AvailabilityDTO> getAllAvailabilities() {
-        return availabilityRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public List<Availability> getAllAvailabilities() {
+        return availabilityRepository.findAll();
     }
 
 
