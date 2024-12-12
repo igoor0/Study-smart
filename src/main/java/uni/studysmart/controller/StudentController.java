@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.studysmart.dto.StudentDTO;
+import uni.studysmart.model.user.Student;
 import uni.studysmart.service.PlannerService;
 import uni.studysmart.service.StudentService;
 
@@ -23,9 +24,9 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentDTO>> getAllStudents() {
-        List<StudentDTO> studentDTOList = studentService.getAllStudents();
-        return ResponseEntity.ok(studentDTOList);
+    public ResponseEntity<List<Student>> getAllStudents() {
+        List<Student> students = studentService.getAllStudents();
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/{id}")

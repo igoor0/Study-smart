@@ -1,6 +1,5 @@
 package uni.studysmart.service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.StudentDTO;
 import uni.studysmart.exception.ApiRequestException;
@@ -24,10 +23,8 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public List<StudentDTO> getAllStudents() {
-        return studentRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
     public StudentDTO getStudentById(Long id) {
