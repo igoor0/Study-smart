@@ -31,7 +31,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 internalServerError,
-                ZonedDateTime.now(ZoneId.of("ECT")),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "NULL_POINTER_EXCEPTION"
         );
         return new ResponseEntity<>(apiException, internalServerError);
