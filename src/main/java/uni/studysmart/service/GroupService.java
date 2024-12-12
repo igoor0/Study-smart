@@ -3,19 +3,23 @@ package uni.studysmart.service;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.GroupDTO;
 import uni.studysmart.model.Group;
-import uni.studysmart.model.Student;
+import uni.studysmart.model.user.Student;
 import uni.studysmart.repository.GroupRepository;
+import uni.studysmart.repository.StudentRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final StudentRepository studentRepository;
 
-    public GroupService(GroupRepository groupRepository) {
+    public GroupService(GroupRepository groupRepository, StudentRepository studentRepository) {
         this.groupRepository = groupRepository;
+        this.studentRepository = studentRepository;
     }
 
     public List<GroupDTO> getAllGroups() {
@@ -42,19 +46,21 @@ public class GroupService {
 
     private GroupDTO convertToDTO(Group group) {
         return new GroupDTO(
-                group.getId(),
                 group.getName(),
-                group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null,
-                group.getCourses() != null ? group.getCourses().getId() : null
+                group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null
         );
     }
 
     private Group convertToEntity(GroupDTO groupDTO) {
         Group group = new Group();
-        group.setId(groupDTO.getId());
         group.setName(groupDTO.getName());
+        List<Student> students = groupDTO.getStudentIdList().stream()
+                .map(studentRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
 
+        group.setStudents(students);
         return group;
     }
-
 }
