@@ -7,13 +7,15 @@ import org.springframework.stereotype.Service;
 import uni.studysmart.config.JwtService;
 import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.user.Lecturer;
-import uni.studysmart.model.Role;
+import uni.studysmart.model.user.Role;
 import uni.studysmart.model.user.Planner;
 import uni.studysmart.model.user.Student;
 import uni.studysmart.model.user.User;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.StudentRepository;
 import uni.studysmart.repository.UserRepository;
+
+import java.time.Year;
 
 @Service
 public class AuthenticationService {
@@ -130,9 +132,11 @@ public class AuthenticationService {
         student.setLastName(request.getLastName());
         student.setPassword(passwordEncoder.encode(request.getPassword()));
         student.setRole(Role.STUDENT);
-        student.setIndexNumber(request.getIndexNumber());
         student.setMajor(request.getMajor());
         studentRepository.save(student);
+        student.setIndexNumber(generateIndexNumber(student.getId()));
+        studentRepository.save(student);
+
 
 
         var jwtToken = jwtService.generateToken(
@@ -145,6 +149,13 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
+
+        public static String generateIndexNumber(Long studentId) {
+            int currentYear = Year.now().getValue();
+            long shiftedId = studentId + currentYear + 500;
+            return "STU" + shiftedId;
+        }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
