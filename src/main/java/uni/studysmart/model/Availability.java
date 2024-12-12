@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uni.studysmart.model.user.Lecturer;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;

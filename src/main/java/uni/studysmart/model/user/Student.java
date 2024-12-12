@@ -1,8 +1,10 @@
-package uni.studysmart.model;
+package uni.studysmart.model.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import uni.studysmart.model.Group;
+import uni.studysmart.model.Preference;
 
 import java.util.List;
 

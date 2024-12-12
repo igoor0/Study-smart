@@ -1,4 +1,4 @@
-package uni.studysmart.model;
+package uni.studysmart.model.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uni.studysmart.model.Role;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,10 +30,12 @@ public class User implements UserDetails {
     private String lastName;
     private String password;
     private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
+
     @Override
     public String getUsername() {
         return email;
@@ -57,4 +60,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

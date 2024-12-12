@@ -3,6 +3,7 @@ package uni.studysmart.service;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.AvailabilityDTO;
 import uni.studysmart.model.*;
+import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.PreferenceRepository;
