@@ -32,14 +32,6 @@ public class PlannerController {
         return plannerService.removeLecturerFromCourse(courseId);
     }
 
-    @PostMapping("/addGroupToCourse")
-    public ResponseEntity<String> addCourseToGroup(@RequestParam Long courseId, @RequestParam Long groupId) {
-        return plannerService.addGroupToCourse(courseId, groupId);
-    }
 
-    @PutMapping("/removeGroupFromCourse")
-    public ResponseEntity<String> deleteGroupFromCourse(@RequestParam Long courseId, @RequestParam Long groupId) {
-        return plannerService.removeGroupFromCourse(courseId, groupId);
-    }
 
 }
