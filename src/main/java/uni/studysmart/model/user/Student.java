@@ -17,6 +17,7 @@ public class Student extends User {
     private String indexNumber;
     private String major;
     @ManyToOne
+    @JoinColumn(name = "group_id")
     private Group group;
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Preference> preferences;

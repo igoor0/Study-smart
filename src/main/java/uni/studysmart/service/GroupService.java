@@ -59,15 +59,18 @@ public class GroupService {
 
         List<Student> students = (groupDTO.getStudentIdList() != null)
                 ? groupDTO.getStudentIdList().stream()
-                .map(studentRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(studentId -> studentRepository.findById(studentId)
+                        .orElseThrow(() -> new ApiRequestException("Student with ID " + studentId + " not found")))
                 .collect(Collectors.toList())
                 : List.of();
 
         group.setStudents(students);
+
+        students.forEach(student -> student.setGroup(group));
+
         return group;
     }
+
 
     public Long updateGroup(Long id, GroupDTO groupDTO) {
         Group existingGroup = groupRepository.findById(id)
