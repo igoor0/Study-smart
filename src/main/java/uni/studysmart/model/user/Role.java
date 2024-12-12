@@ -1,4 +1,4 @@
-package uni.studysmart.model;
+package uni.studysmart.model.user;
 
 public enum Role {
     STUDENT,
