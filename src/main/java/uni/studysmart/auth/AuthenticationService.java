@@ -1,67 +1,145 @@
 package uni.studysmart.auth;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uni.studysmart.config.JwtService;
 import uni.studysmart.exception.ApiRequestException;
+import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.model.Role;
-import uni.studysmart.model.Student;
-import uni.studysmart.model.Lecturer;
-import uni.studysmart.model.User;
+import uni.studysmart.model.user.Planner;
+import uni.studysmart.model.user.Student;
+import uni.studysmart.model.user.User;
+import uni.studysmart.repository.LecturerRepository;
+import uni.studysmart.repository.StudentRepository;
 import uni.studysmart.repository.UserRepository;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final LecturerRepository lecturerRepository;
+    private final StudentRepository studentRepository;
+
+    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, LecturerRepository lecturerRepository, StudentRepository studentRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.lecturerRepository = lecturerRepository;
+        this.studentRepository = studentRepository;
+    }
+
+    private boolean doesUserExist(String username) {
+        return userRepository.findByEmail(username).isPresent();
+    }
 
     public AuthenticationResponse register(RegisterRequest request) {
-        validateEmailForRole(request.getEmail());
 
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (doesUserExist(request.getEmail())) {
             throw new ApiRequestException("User with email " + request.getEmail() + " already exists");
         }
 
-        // Tworzymy użytkownika na podstawie roli określonej przez e-mail
-        User user;
-        if (request.getEmail().endsWith("@student.umg.pl")) {
-            user = new Student();
-            user.setRole(Role.STUDENT);
-        } else if (request.getEmail().endsWith("@wykladowca.umg.pl")) {
-            user = new Lecturer();
-            user.setRole(Role.LECTURER);
-        } else if (request.getEmail().endsWith("@planner.umg.pl")) {
-            user = new User();
-            user.setRole(Role.PLANNER);
-        } else if (request.getEmail().endsWith("@admin.umg.pl")) {
-            user = new User();
-            user.setRole(Role.ADMIN);
-        } else {
-            throw new ApiRequestException("Invalid email domain specified");
-        }
-
+        User user = new User();
         user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstname());
-        user.setLastName(request.getLastname());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        // Zapis użytkownika do bazy danych
+        user.setRole(Role.STUDENT);
         userRepository.save(user);
 
-        // Generowanie tokenu JWT
         var jwtToken = jwtService.generateToken(
                 user,
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole().toString());
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public AuthenticationResponse registerPlanner(PlannerRegisterRequest request) {
+
+        if (doesUserExist(request.getEmail())) {
+            throw new ApiRequestException("User with email " + request.getEmail() + " already exists");
+        }
+
+        Planner planner = new Planner();
+        planner.setEmail(request.getEmail());
+        planner.setFirstName(request.getFirstName());
+        planner.setLastName(request.getLastName());
+        planner.setPassword(passwordEncoder.encode(request.getPassword()));
+        planner.setRole(Role.PLANNER);
+        userRepository.save(planner);
+
+        var jwtToken = jwtService.generateToken(
+                planner,
+                planner.getId(),
+                planner.getFirstName(),
+                planner.getLastName(),
+                planner.getRole().toString());
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public AuthenticationResponse registerLecturer(LecturerRegisterRequest request) {
+
+        if (doesUserExist(request.getEmail())) {
+            throw new ApiRequestException("User with email " + request.getEmail() + " already exists");
+        }
+
+        Lecturer lecturer = new Lecturer();
+        lecturer.setEmail(request.getEmail());
+        lecturer.setFirstName(request.getFirstName());
+        lecturer.setLastName(request.getLastName());
+        lecturer.setPassword(passwordEncoder.encode(request.getPassword()));
+        lecturer.setClassRoom(request.getClassRoom());
+        lecturer.setDepartment(request.getDepartment());
+        lecturer.setOfficeNumber(request.getOfficeNumber());
+        lecturer.setRole(Role.LECTURER);
+        lecturer.setConfirmed(false);
+        lecturerRepository.save(lecturer);
+
+
+        var jwtToken = jwtService.generateToken(
+                lecturer,
+                lecturer.getId(),
+                lecturer.getFirstName(),
+                lecturer.getLastName(),
+                lecturer.getRole().toString());
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public AuthenticationResponse registerStudent(StudentRegisterRequest request) {
+        if (doesUserExist(request.getEmail())) {
+            throw new ApiRequestException("User with email " + request.getEmail() + " already exists");
+        }
+
+        Student student = new Student();
+        student.setEmail(request.getEmail());
+        student.setFirstName(request.getFirstName());
+        student.setLastName(request.getLastName());
+        student.setPassword(passwordEncoder.encode(request.getPassword()));
+        student.setRole(Role.STUDENT);
+        student.setIndexNumber(request.getIndexNumber());
+        student.setMajor(request.getMajor());
+        studentRepository.save(student);
+
+
+        var jwtToken = jwtService.generateToken(
+                student,
+                student.getId(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getRole().toString());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -81,7 +159,7 @@ public class AuthenticationService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole().toString()
-                );
+        );
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -107,9 +185,4 @@ public class AuthenticationService {
         }
     }
 
-    private void validateEmailForRole(String email) {
-        if (!email.endsWith("@student.umg.pl") && !email.endsWith("@wykladowca.umg.pl") && !email.endsWith("@planner.umg.pl") && !email.endsWith("@admin.umg.pl")) {
-            throw new ApiRequestException("Mail domain has to end with either: student/wykladowca/planista @umg.pl");
-        }
-    }
 }
