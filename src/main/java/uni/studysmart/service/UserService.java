@@ -4,12 +4,8 @@ package uni.studysmart.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uni.studysmart.dto.AvailabilityDTO;
-import uni.studysmart.dto.LecturerDTO;
 import uni.studysmart.dto.UserDTO;
-import uni.studysmart.model.Availability;
-import uni.studysmart.model.Lecturer;
-import uni.studysmart.model.User;
+import uni.studysmart.model.user.User;
 import uni.studysmart.repository.UserRepository;
 
 import java.util.List;

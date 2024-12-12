@@ -1,13 +1,11 @@
 package uni.studysmart.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uni.studysmart.dto.GroupDTO;
 import uni.studysmart.model.Course;
 import uni.studysmart.model.Group;
-import uni.studysmart.model.Lecturer;
-import uni.studysmart.model.Student;
+import uni.studysmart.model.user.Lecturer;
+import uni.studysmart.model.user.Student;
 import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.repository.GroupRepository;
 import uni.studysmart.repository.LecturerRepository;
@@ -62,33 +60,7 @@ public class PlannerService {
         return ResponseEntity.ok("Student został usunięty z grupy");
     }
 
-    public ResponseEntity<String> addGroupToCourse(Long courseId, Long groupId) {
-        Group group = groupRepository.findById(groupId).orElse(null);
-        if (group == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Course course = courseRepository.findById(courseId).orElse(null);
-        if (course == null) {
-            return ResponseEntity.notFound().build();
-        }
-        course.getGroups().add(group);
-        courseRepository.save(course);
-        return ResponseEntity.ok("Grupa została dodana do kursu");
-    }
 
-    public ResponseEntity<String> removeGroupFromCourse(Long courseId, Long groupId) {
-        Group group = groupRepository.findById(groupId).orElse(null);
-        if (group == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Course course = courseRepository.findById(courseId).orElse(null);
-        if (course == null) {
-            return ResponseEntity.notFound().build();
-        }
-        course.getGroups().remove(group);
-        courseRepository.save(course);
-        return ResponseEntity.ok("Grupa została usunięta z kursu");
-    }
 
     public ResponseEntity<String> addLecturerToCourse(Long courseId, Long lecturerId) {
         Course course = courseRepository.findById(courseId).orElse(null);

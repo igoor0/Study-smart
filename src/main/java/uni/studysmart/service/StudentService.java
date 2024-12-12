@@ -1,10 +1,9 @@
 package uni.studysmart.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.StudentDTO;
 import uni.studysmart.model.Preference;
-import uni.studysmart.model.Student;
+import uni.studysmart.model.user.Student;
 import uni.studysmart.repository.StudentRepository;
 
 import java.util.List;

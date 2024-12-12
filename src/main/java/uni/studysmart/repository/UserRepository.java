@@ -2,7 +2,7 @@ package uni.studysmart.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import uni.studysmart.model.User;
+import uni.studysmart.model.user.User;
 
 import java.util.Optional;
 
