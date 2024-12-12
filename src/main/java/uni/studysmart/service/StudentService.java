@@ -37,6 +37,10 @@ public class StudentService {
 
     private StudentDTO convertToDTO(Student student) {
         return new StudentDTO(
+                student.getId(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getEmail(),
                 student.getIndexNumber(),
                 student.getMajor(),
                 student.getGroup() != null ? student.getGroup().getId() : null,
