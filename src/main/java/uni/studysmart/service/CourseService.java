@@ -4,6 +4,7 @@ package uni.studysmart.service;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.*;
 import uni.studysmart.model.*;
+import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.repository.GroupRepository;
 import uni.studysmart.repository.LecturerRepository;
@@ -117,10 +118,6 @@ public class CourseService {
             existingCourse.setLecturer(lecturer);
         }
 
-        if (courseDTO.getGroupsIdList() != null) {
-            List<Group> groups = groupRepository.findAllById(courseDTO.getGroupsIdList());
-            existingCourse.setGroups(groups);
-        }
 
         Course updatedCourse = courseRepository.save(existingCourse);
         return convertToDTO(updatedCourse);
@@ -134,7 +131,6 @@ public class CourseService {
                 course.getCourseDuration(),
                 course.getStartTime() != null ? course.getStartTime().toString() : null,
                 course.getEndTime() != null ? course.getEndTime().toString() : null,
-                course.getGroups() != null ? course.getGroups().stream().map(Group::getId).collect(Collectors.toList()) : null,
                 course.getLecturer() != null ? course.getLecturer().getId() : null
         );
     }
@@ -160,10 +156,6 @@ public class CourseService {
             course.setLecturer(lecturer);
         }
 
-        if (courseDTO.getGroupsIdList() != null) {
-            List<Group> groups = groupRepository.findAllById(courseDTO.getGroupsIdList());
-            course.setGroups(groups);
-        }
 
         return course;
     }

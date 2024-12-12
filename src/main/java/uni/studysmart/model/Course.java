@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import uni.studysmart.model.user.Lecturer;
 
 import java.time.LocalTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -24,8 +24,6 @@ public class Course {
 
     @ManyToOne
     private Lecturer lecturer;
-    @OneToMany(mappedBy = "courses")
-    private List<Group> groups;
 
     //Mamy dany kurs
     //Ten kurs jest prowadzony przez KILKU prowadzących (dany kurs może mieć wielu prowadzących)

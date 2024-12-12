@@ -13,7 +13,6 @@ public class CourseDTO {
     private int courseDuration;
     private String startTime;
     private String endTime;
-    private List<Long> groupsIdList;
     private Long lecturerId;
 
     // Konstruktor, gettery i settery
