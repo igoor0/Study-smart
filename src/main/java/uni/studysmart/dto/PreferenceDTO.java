@@ -16,6 +16,11 @@ public class PreferenceDTO {
     private Long studentId;
     private Long courseId;
 
-    public PreferenceDTO(String monday, String time, String time1, long l, long l1) {
+    public PreferenceDTO(String dayOfWeek, String startTime, String endTime, long studentId, long courseId) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.studentId = studentId;
+        this.courseId = courseId;
     }
 }
