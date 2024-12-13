@@ -1,7 +1,6 @@
 package uni.studysmart.dto;
 
 import lombok.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +14,20 @@ public class CourseDTO {
     private String endTime;
     private Long lecturerId;
 
-    public CourseDTO(String mathematics, boolean b, int i, String time, String time1, long l) {
+    public CourseDTO(String name, boolean scheduled, int courseDuration, String startTime, String endTime, long lecturerId) {
+        this.name = name;
+        this.scheduled = scheduled;
+        this.courseDuration = courseDuration;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.lecturerId = lecturerId;
+    }
+    public CourseDTO(String name, boolean scheduled, int courseDuration, String startTime, String endTime) {
+        this.name = name;
+        this.scheduled = scheduled;
+        this.courseDuration = courseDuration;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
 }

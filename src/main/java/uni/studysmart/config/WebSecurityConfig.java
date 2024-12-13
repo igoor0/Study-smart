@@ -26,7 +26,6 @@ import java.util.Arrays;
 public class WebSecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private final AuthenticationProvider authenticationProvider;
 
     @Bean

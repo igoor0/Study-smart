@@ -14,6 +14,10 @@ public class AvailabilityDTO {
     private String endTime;
     private Long lecturerId;
 
-    public AvailabilityDTO(String monday, String time, String time1, long l) {
+    public AvailabilityDTO(String dayOfWeek, String startTime, String endTime, long lecturerId) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.lecturerId = lecturerId;
     }
 }
