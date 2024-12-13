@@ -55,6 +55,7 @@ public class PreferenceService {
                 preference.getId(),
                 preference.getDayId(),
                 preference.getDayName(),
+                preference.getTimes(),
                 preference.getTimeRanges() != null ? convertTimeRangesToString(preference.getTimeRanges()) : null,
                 preference.getStudent() != null ? preference.getStudent().getId() : null,
                 preference.getCourse() != null ? preference.getCourse().getId() : null
@@ -66,6 +67,7 @@ public class PreferenceService {
         preference.setId(preferenceDTO.getId());
         preference.setDayId(preferenceDTO.getDayId());
         preference.setDayName(preferenceDTO.getDayName());
+        preference.setTimes(preferenceDTO.getTimes());
 
         List<TimeRange> timeRanges = preferenceDTO.getTimeRanges().stream()
                 .map(this::convertToTimeRange)

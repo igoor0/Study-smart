@@ -2,7 +2,6 @@ package uni.studysmart.dto;
 
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,14 +16,14 @@ public class PreferenceDTO {
     private Long studentId;
     private Long courseId;
 
-    public PreferenceDTO(Long id, Long dayId, String dayName, List<List<String>> lists, Long aLong, Long aLong1) {
+    public PreferenceDTO(Long id, Long dayId, String dayName, List<String> times, List<List<String>> timeRanges, Long studentId, Long courseId) {
         this.id = id;
         this.dayId = dayId;
         this.dayName = dayName;
-        this.times = new ArrayList<>();
-        this.timeRanges = new ArrayList<>();
-        this.studentId = aLong;
-        this.courseId = aLong1;
+        this.times = times;
+        this.timeRanges = timeRanges;
+        this.studentId = studentId;
+        this.courseId = courseId;
     }
 
     public PreferenceDTO(Long dayId, String dayName, List<String> times, List<List<String>> timeRanges, Long studentId, Long courseId) {

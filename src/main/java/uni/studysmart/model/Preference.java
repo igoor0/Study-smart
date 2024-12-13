@@ -20,14 +20,18 @@ public class Preference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long dayId;
     private String dayName;
 
     @ElementCollection
+    @CollectionTable(name = "availability_times", joinColumns = @JoinColumn(name = "availability_id"))
+    @Column(name = "time")
+    private List<String> times;
+
+    @ElementCollection
     @CollectionTable(name = "preference_time_ranges", joinColumns = @JoinColumn(name = "preference_id"))
     @Column(name = "time_range")
-    private List<TimeRange> timeRanges; // Preferowane zakresy czasowe
+    private List<TimeRange> timeRanges;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

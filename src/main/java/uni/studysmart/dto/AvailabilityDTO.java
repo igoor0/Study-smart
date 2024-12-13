@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-
 public class AvailabilityDTO {
     private Long id;
     private Long dayId;
@@ -17,13 +16,20 @@ public class AvailabilityDTO {
     private List<List<String>> timeRanges;
     private Long lecturerId;
 
-    public AvailabilityDTO(Long id, Long dayId, String dayName, List<List<String>> lists, Long aLong) {
+    public AvailabilityDTO(Long id, Long dayId, String dayName, List<String> times, List<List<String>> timeRanges, Long lecturerId) {
         this.id = id;
         this.dayId = dayId;
         this.dayName = dayName;
-        this.times = new ArrayList<>();
-        this.timeRanges = new ArrayList<>();
-        this.lecturerId = aLong;
+        this.times = times;
+        this.timeRanges = timeRanges;
+        this.lecturerId = lecturerId;
+    }
 
+    public AvailabilityDTO(Long dayId, String dayName, List<String> times, List<List<String>> timeRanges, Long lecturerId) {
+        this.dayId = dayId;
+        this.dayName = dayName;
+        this.times = times;
+        this.timeRanges = timeRanges;
+        this.lecturerId = lecturerId;
     }
 }

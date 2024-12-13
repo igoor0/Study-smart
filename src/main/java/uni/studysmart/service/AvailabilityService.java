@@ -52,14 +52,9 @@ public class AvailabilityService {
                 availability.getId(),
                 availability.getDayId(),
                 availability.getDayName(),
-                availability.getTimeRanges() != null ? availability.getTimeRanges().stream()
-                        .map(timeRange -> {
-                            List<String> timeRangeList = List.of(
-                                    timeRange.getStartTime().toString(),
-                                    timeRange.getEndTime().toString()
-                            );
-                            return timeRangeList;
-                        }).collect(Collectors.toList()) : null,
+                availability.getTimes(),
+                availability.getTimeRanges() != null ? convertTimeRangesToString(availability.getTimeRanges()) : null,
+
                 availability.getLecturer() != null ? availability.getLecturer().getId() : null
         );
     }
@@ -70,6 +65,7 @@ public class AvailabilityService {
         availability.setId(availabilityDTO.getId());
         availability.setDayId(availabilityDTO.getDayId());
         availability.setDayName(availabilityDTO.getDayName());
+        availability.setTimes(availabilityDTO.getTimes());
 
         if (availabilityDTO.getLecturerId() != null) {
             Lecturer lecturer = lecturerRepository.findById(availabilityDTO.getLecturerId())
@@ -88,5 +84,10 @@ public class AvailabilityService {
         }
 
         return availability;
+    }
+    private List<List<String>> convertTimeRangesToString(List<TimeRange> timeRanges) {
+        return timeRanges.stream()
+                .map(timeRange -> List.of(timeRange.getStartTime().toString(), timeRange.getEndTime().toString()))
+                .collect(Collectors.toList());
     }
 }

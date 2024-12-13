@@ -24,6 +24,7 @@ public class AvailabilityController {
         Long createdId = availabilityService.addAvailability(availabilityDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
+
     @GetMapping
     public ResponseEntity<List<AvailabilityDTO>> getAvailabilities() {
         List<AvailabilityDTO> availibilityDTOList = availabilityService.getAllAvailabilities();

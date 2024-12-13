@@ -24,6 +24,11 @@ public class Availability {
     private Long id;
     private Long dayId;
     private String dayName;
+
+    @ElementCollection
+    @CollectionTable(name = "availability_times", joinColumns = @JoinColumn(name = "availability_id"))
+    @Column(name = "time")
+    private List<String> times;
     @ElementCollection
     @CollectionTable(name = "availability_time_ranges", joinColumns = @JoinColumn(name = "availability_id"))
     @Column(name = "time_range")
