@@ -27,9 +27,9 @@ public class PreferenceController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createPreference(@RequestBody PreferenceDTO preferenceDTO) {
-        Long createdId = preferenceService.addPreference(preferenceDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
+    public ResponseEntity<List<Long>> createPreferences(@RequestBody List<PreferenceDTO> preferenceDTOList) {
+        List<Long> createdIdList = preferenceService.addPreferences(preferenceDTOList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdIdList);
     }
 
     @GetMapping("/{id}")

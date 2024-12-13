@@ -12,6 +12,7 @@ import uni.studysmart.dto.PreferenceDTO;
 import uni.studysmart.utils.TimeRange;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,18 @@ public class PreferenceService {
         preference = preferenceRepository.save(preference);
         return preference.getId();
     }
+    public List<Long> addPreferences(List<PreferenceDTO> preferenceDTOList) {
+        List<Long> preferenceIdList = new ArrayList<>();
+        List<Preference> preferences = new ArrayList<>();
+        for (PreferenceDTO preferenceDTO : preferenceDTOList) {
+            Preference preference = convertToEntity(preferenceDTO);
+            preferences.add(preference);
+            preferenceIdList.add(preference.getId());
+        }
+        preferenceRepository.saveAll(preferences);
+        return preferenceIdList;
+    }
+
 
     public PreferenceDTO getPreferenceById(Long id) {
         Preference preference = preferenceRepository.findById(id)
