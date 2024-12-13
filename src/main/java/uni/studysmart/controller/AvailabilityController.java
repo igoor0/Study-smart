@@ -20,8 +20,8 @@ public class AvailabilityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Availability>> getAvailabilities() {
-        List<Availability> availibilityDTOList = availabilityService.getAllAvailabilities();
+    public ResponseEntity<List<AvailabilityDTO>> getAvailabilities() {
+        List<AvailabilityDTO> availibilityDTOList = availabilityService.getAllAvailabilities();
         return ResponseEntity.ok(availibilityDTOList);
     }
 
