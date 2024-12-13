@@ -16,7 +16,7 @@ public class Group {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<Student> students;
 }
 
