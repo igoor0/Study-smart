@@ -69,35 +69,35 @@ public class CourseService {
         return 0;
     }
 
-    public boolean isCourseInSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ApiRequestException("Schedule not found"));
-        if (schedule == null) return false; //TODO: do przemyślenia
-        return schedule.getCourse().getIsScheduled();
-    }
-
-    //Czy możemy ten kurs wpisać w tych godzinach (czy występuje konflikt w innych grupach dla tego kursu)
-    public boolean hasScheduleConflict(Long courseId, LocalTime startTime, LocalTime endTime) {
-        Course course = courseRepository.findById(courseId).orElse(null);
-        if (course == null) return true;
-        List<Schedule> schedules = scheduleRepository.findAll();
-        for (Schedule schedule : schedules) {
-            for (Lecturer lecturer : lecturerRepository.findAllByCourses_Id(courseId))
-                if (schedule.getCourse().getName().equals(course.getName())) {
-                    //DWA PRZYPADKI
-                    //PIERWSZY - Kurs jest przed i w trakcie innych zajęć
-                    //DRUGI - Kurs jest po i w trakcie innych zajęć
-
-                    //Czy dana grupa ma w tych godzinach zajęcia
-                    if ((schedule.getCourse().getIsScheduled() && schedule.getCourse().getStartTime().isBefore(course.getEndTime())) ||
-                            (schedule.getCourse().getIsScheduled() && schedule.getCourse().getEndTime().isBefore(course.getStartTime()))) {
-                        //Ile grup ma w tych godzinach zajęcia / Jeżeli mniej niż jest dostępnych wykładowców tego przedmiotu, to możemy mieć tu zajęcia z dostępnym wykładowcą (ale w innej sali hehe)
-                        return schedule.getCourse().getLecturer().equals(lecturer);
-                    } else return true;
-                }
-        }
-        return false;
-    }
+//    public boolean isCourseInSchedule(Long scheduleId) {
+//        Schedule schedule = scheduleRepository.findById(scheduleId)
+//                .orElseThrow(() -> new ApiRequestException("Schedule not found"));
+//        if (schedule == null) return false; //TODO: do przemyślenia
+//        return schedule.getCourse().getIsScheduled();
+//    }
+//
+//    //Czy możemy ten kurs wpisać w tych godzinach (czy występuje konflikt w innych grupach dla tego kursu)
+//    public boolean hasScheduleConflict(Long courseId, LocalTime startTime, LocalTime endTime) {
+//        Course course = courseRepository.findById(courseId).orElse(null);
+//        if (course == null) return true;
+//        List<Schedule> schedules = scheduleRepository.findAll();
+//        for (Schedule schedule : schedules) {
+//            for (Lecturer lecturer : lecturerRepository.findAllByCourses_Id(courseId))
+//                if (schedule.getCourse().getName().equals(course.getName())) {
+//                    //DWA PRZYPADKI
+//                    //PIERWSZY - Kurs jest przed i w trakcie innych zajęć
+//                    //DRUGI - Kurs jest po i w trakcie innych zajęć
+//
+//                    //Czy dana grupa ma w tych godzinach zajęcia
+//                    if ((schedule.getCourse().getIsScheduled() && schedule.getCourse().getStartTime().isBefore(course.getEndTime())) ||
+//                            (schedule.getCourse().getIsScheduled() && schedule.getCourse().getEndTime().isBefore(course.getStartTime()))) {
+//                        //Ile grup ma w tych godzinach zajęcia / Jeżeli mniej niż jest dostępnych wykładowców tego przedmiotu, to możemy mieć tu zajęcia z dostępnym wykładowcą (ale w innej sali hehe)
+//                        return schedule.getCourse().getLecturer().equals(lecturer);
+//                    } else return true;
+//                }
+//        }
+//        return false;
+//    }
 
     public CourseDTO updateCourse(Long id, CourseDTO courseDTO) {
         Course existingCourse = courseRepository.findById(id)
@@ -152,14 +152,16 @@ public class CourseService {
         }
 
         if (courseDTO.getLecturerId() != null) {
-            Lecturer lecturer = lecturerRepository.findById(courseDTO.getLecturerId())
-                    .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
-            course.setLecturer(lecturer);
+            lecturerRepository.findById(courseDTO.getLecturerId()).ifPresentOrElse(
+                    course::setLecturer,
+                    () -> {
+                        throw new ApiRequestException("Lecturer with ID " + courseDTO.getLecturerId() + " not found");
+                    }
+            );
+        } else {
+            course.setLecturer(null);
         }
-
 
         return course;
     }
-
-
 }
