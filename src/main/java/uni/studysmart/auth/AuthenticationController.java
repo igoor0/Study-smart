@@ -32,7 +32,6 @@ public class AuthenticationController {
     @PostMapping("/addPlanner")
     public ResponseEntity<AuthenticationResponse> addPlanner(@RequestBody PlannerRegisterRequest registerRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.registerPlanner(registerRequest));
-
     }
 
     @PostMapping("/authenticate")
