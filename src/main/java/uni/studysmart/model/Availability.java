@@ -22,10 +22,8 @@ public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
-
+    private Long dayId;
+    private String dayName;
     @ElementCollection
     @CollectionTable(name = "availability_time_ranges", joinColumns = @JoinColumn(name = "availability_id"))
     @Column(name = "time_range")

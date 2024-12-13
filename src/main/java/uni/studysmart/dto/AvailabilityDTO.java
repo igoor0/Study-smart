@@ -1,26 +1,29 @@
 package uni.studysmart.dto;
 
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class AvailabilityDTO {
     private Long id;
-    private int iden; // Dzień tygodnia jako liczba
-    private String dayName; // Nazwa dnia tygodnia
-    private List<List<String>> timeRanges; // Zakresy czasowe w formacie [["07:00", "09:00"], ["14:00", "16:00"]]
+    private Long dayId;
+    private String dayName;
+    private List<String> times;
+    private List<List<String>> timeRanges;
     private Long lecturerId;
 
-    public AvailabilityDTO(int iden, String dayName, List<List<String>> timeRanges, Long lecturerId) {
-        this.iden = iden;
+    public AvailabilityDTO(Long id, Long dayId, String dayName, List<List<String>> lists, Long aLong) {
+        this.id = id;
+        this.dayId = dayId;
         this.dayName = dayName;
-        this.timeRanges = timeRanges;
-        this.lecturerId = lecturerId;
+        this.times = new ArrayList<>();
+        this.timeRanges = new ArrayList<>();
+        this.lecturerId = aLong;
+
     }
 }

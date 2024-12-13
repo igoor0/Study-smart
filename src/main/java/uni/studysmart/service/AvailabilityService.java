@@ -3,11 +3,10 @@ package uni.studysmart.service;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.AvailabilityDTO;
 import uni.studysmart.exception.ApiRequestException;
-import uni.studysmart.model.*;
+import uni.studysmart.model.Availability;
 import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
-import uni.studysmart.repository.PreferenceRepository;
 import uni.studysmart.utils.TimeRange;
 
 import java.time.DayOfWeek;
@@ -20,37 +19,74 @@ public class AvailabilityService {
 
     private final AvailabilityRepository availabilityRepository;
     private final LecturerRepository lecturerRepository;
-    private final PreferenceRepository preferenceRepository;
 
-    public AvailabilityService(AvailabilityRepository availabilityRepository, LecturerRepository lecturerRepository, PreferenceRepository preferenceRepository) {
+    public AvailabilityService(AvailabilityRepository availabilityRepository, LecturerRepository lecturerRepository) {
         this.availabilityRepository = availabilityRepository;
         this.lecturerRepository = lecturerRepository;
-        this.preferenceRepository = preferenceRepository;
     }
 
     public List<AvailabilityDTO> getAllAvailabilities() {
-        return availabilityRepository.findAll().stream().map(availability -> {
-            AvailabilityDTO dto = new AvailabilityDTO();
-            dto.setId(availability.getId());
-            dto.setIden(availability.getDayOfWeek().getValue());
-            dto.setDayName(availability.getDayOfWeek().name());
-            dto.setTimeRanges(availability.getTimeRanges().stream()
-                    .map(range -> List.of(range.getStartTime().toString(), range.getEndTime().toString()))
-                    .collect(Collectors.toList()));
-            dto.setLecturerId(availability.getLecturer().getId());
-            return dto;
-        }).collect(Collectors.toList());
+        return availabilityRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Long addAvailability(AvailabilityDTO dto) {
-        Availability availability = new Availability();
-        availability.setDayOfWeek(DayOfWeek.of(dto.getIden())); // Zamiana ID dnia na DayOfWeek
-        availability.setLecturer(lecturerRepository.findById(dto.getLecturerId()).orElseThrow());
-        availability.setTimeRanges(dto.getTimeRanges().stream()
-                .map(range -> new TimeRange(LocalTime.parse(range.get(0)), LocalTime.parse(range.get(1))))
-                .collect(Collectors.toList()));
-        availabilityRepository.save(availability);
+    public Long addAvailability(AvailabilityDTO availabilityDTO) {
+        Availability availability = convertToEntity(availabilityDTO);
+        availability = availabilityRepository.save(availability);
         return availability.getId();
     }
-}
 
+    public AvailabilityDTO getAvailabilityById(Long id) {
+        Availability availability = availabilityRepository.findById(id)
+                .orElseThrow(() -> new ApiRequestException("Availability not found"));
+        return convertToDTO(availability);
+    }
+
+    public void deleteAvailability(Long id) {
+        availabilityRepository.deleteById(id);
+    }
+
+    private AvailabilityDTO convertToDTO(Availability availability) {
+        return new AvailabilityDTO(
+                availability.getId(),
+                availability.getDayId(),
+                availability.getDayName(),
+                availability.getTimeRanges() != null ? availability.getTimeRanges().stream()
+                        .map(timeRange -> {
+                            List<String> timeRangeList = List.of(
+                                    timeRange.getStartTime().toString(),
+                                    timeRange.getEndTime().toString()
+                            );
+                            return timeRangeList;
+                        }).collect(Collectors.toList()) : null,
+                availability.getLecturer() != null ? availability.getLecturer().getId() : null
+        );
+    }
+
+    private Availability convertToEntity(AvailabilityDTO availabilityDTO) {
+        Availability availability = new Availability();
+
+        availability.setId(availabilityDTO.getId());
+        availability.setDayId(availabilityDTO.getDayId());
+        availability.setDayName(availabilityDTO.getDayName());
+
+        if (availabilityDTO.getLecturerId() != null) {
+            Lecturer lecturer = lecturerRepository.findById(availabilityDTO.getLecturerId())
+                    .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
+            availability.setLecturer(lecturer);
+        }
+
+        if (availabilityDTO.getTimeRanges() != null) {
+            List<TimeRange> timeRanges = availabilityDTO.getTimeRanges().stream()
+                    .map(timeRangeStrings -> new TimeRange(
+                            LocalTime.parse(timeRangeStrings.get(0)),
+                            LocalTime.parse(timeRangeStrings.get(1))
+                    ))
+                    .collect(Collectors.toList());
+            availability.setTimeRanges(timeRanges);
+        }
+
+        return availability;
+    }
+}
