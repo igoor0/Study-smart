@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @Data
 @Getter
 @Setter
