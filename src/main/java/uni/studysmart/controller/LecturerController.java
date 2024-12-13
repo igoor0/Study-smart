@@ -39,4 +39,16 @@ public class LecturerController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedLecturerId);
     }
 
+    @PostMapping("/{lecturerId}/confirm")
+    public ResponseEntity<Long> confirmLecturer(@PathVariable Long lecturerId) {
+        Long updatedLecturerId = lecturerService.confirmLecturer(lecturerId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedLecturerId);
+    }
+
+    @PostMapping("/confirm-all")
+    public ResponseEntity<Void> confirmAllLecturers() {
+        lecturerService.confirmAllLecturers();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
 }

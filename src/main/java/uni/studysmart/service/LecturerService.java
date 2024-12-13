@@ -61,4 +61,20 @@ public class LecturerService {
         courseRepository.save(course);
         return lecturer.getId();
     }
+
+    public Long confirmLecturer(Long lecturerId) {
+        Lecturer lecturer = lecturerRepository.findById(lecturerId)
+                .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
+        lecturer.setConfirmed(true);
+        lecturerRepository.save(lecturer);
+        return lecturer.getId();
+    }
+
+    public void confirmAllLecturers() {
+        List<Lecturer> lecturers = lecturerRepository.findAll();
+        for (Lecturer lecturer : lecturers) {
+            lecturer.setConfirmed(true);
+            lecturerRepository.save(lecturer);
+        }
+    }
 }
