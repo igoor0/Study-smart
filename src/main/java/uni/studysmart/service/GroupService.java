@@ -86,6 +86,7 @@ public class GroupService {
                 .collect(Collectors.toList());
 
         existingGroup.setStudents(students);
+        students.forEach(student -> student.setGroup(existingGroup));
         Group updatedGroup = groupRepository.save(existingGroup);
         return updatedGroup.getId();
     }
