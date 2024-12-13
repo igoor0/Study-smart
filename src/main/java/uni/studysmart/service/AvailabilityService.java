@@ -11,6 +11,7 @@ import uni.studysmart.utils.TimeRange;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,17 @@ public class AvailabilityService {
         Availability availability = convertToEntity(availabilityDTO);
         availability = availabilityRepository.save(availability);
         return availability.getId();
+    }
+    public List<Long> addAvailabilities(List<AvailabilityDTO> availabilityDTOList) {
+        List<Availability> availabilities = new ArrayList<>();
+        List<Long> availibilityIds = new ArrayList<>();
+        for(AvailabilityDTO availabilityDTO : availabilityDTOList) {
+            Availability availability = convertToEntity(availabilityDTO);
+            availabilities.add(availability);
+            availibilityIds.add(availability.getId());
+        }
+        availabilityRepository.saveAll(availabilities);
+        return availibilityIds;
     }
 
     public AvailabilityDTO getAvailabilityById(Long id) {

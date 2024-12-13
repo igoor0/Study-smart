@@ -20,8 +20,8 @@ public class AvailabilityController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createAvailability(@RequestBody AvailabilityDTO availabilityDTO) {
-        Long createdId = availabilityService.addAvailability(availabilityDTO);
+    public ResponseEntity<List<Long>> createAvailability(@RequestBody List<AvailabilityDTO> availabilityDTOList) {
+        List<Long> createdId = availabilityService.addAvailabilities(availabilityDTOList);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdId);
     }
 
