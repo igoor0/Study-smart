@@ -43,5 +43,4 @@ public class PreferenceController {
         preferenceService.deletePreferenceById(id);
         return ResponseEntity.noContent().build();
     }
-
 }

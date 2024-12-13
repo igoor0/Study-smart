@@ -8,7 +8,10 @@ import lombok.Setter;
 import uni.studysmart.model.user.Lecturer;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
+
+import uni.studysmart.utils.TimeRange;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,11 +22,17 @@ public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
-    private LocalTime startTime;
-    private LocalTime endTime;
+
+    @ElementCollection
+    @CollectionTable(name = "availability_time_ranges", joinColumns = @JoinColumn(name = "availability_id"))
+    @Column(name = "time_range")
+    private List<TimeRange> timeRanges;
+
     @ManyToOne
     private Lecturer lecturer;
 }
+
 

@@ -54,8 +54,7 @@ public class PreferenceService {
 
     private PreferenceDTO convertToDTO(Preference preference) {
         return new PreferenceDTO(
-                preference.getId(),
-                preference.getDayOfWeek() != null ? preference.getDayOfWeek().toString() : null,
+                preference.getIden(),
                 preference.getStartTime() != null ? preference.getStartTime().toString() : null,
                 preference.getEndTime() != null ? preference.getEndTime().toString() : null,
                 preference.getStudent() != null ? preference.getStudent().getId() : null,
@@ -65,11 +64,9 @@ public class PreferenceService {
 
     private Preference convertToEntity(PreferenceDTO preferenceDTO) {
         Preference preference = new Preference();
-
         preference.setId(preferenceDTO.getId());
-        if (preferenceDTO.getDayOfWeek() != null) {
-            preference.setDayOfWeek(DayOfWeek.valueOf(preferenceDTO.getDayOfWeek().toUpperCase()));
-        }
+        preference.setIden(preferenceDTO.getIden());
+
         if (preferenceDTO.getStartTime() != null) {
             preference.setStartTime(LocalTime.parse(preferenceDTO.getStartTime()));
         }

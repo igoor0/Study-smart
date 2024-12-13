@@ -8,6 +8,7 @@ import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
 import uni.studysmart.repository.PreferenceRepository;
+import uni.studysmart.utils.TimeRange;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -27,72 +28,29 @@ public class AvailabilityService {
         this.preferenceRepository = preferenceRepository;
     }
 
-
     public List<AvailabilityDTO> getAllAvailabilities() {
-        return availabilityRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return availabilityRepository.findAll().stream().map(availability -> {
+            AvailabilityDTO dto = new AvailabilityDTO();
+            dto.setId(availability.getId());
+            dto.setIden(availability.getDayOfWeek().getValue());
+            dto.setDayName(availability.getDayOfWeek().name());
+            dto.setTimeRanges(availability.getTimeRanges().stream()
+                    .map(range -> List.of(range.getStartTime().toString(), range.getEndTime().toString()))
+                    .collect(Collectors.toList()));
+            dto.setLecturerId(availability.getLecturer().getId());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
-
-    public Long addAvailability(AvailabilityDTO availabilityDTO) {
-        Availability availability = convertToEntity(availabilityDTO);
-        availability = availabilityRepository.save(availability);
-        return availability.getId();
-    }
-
-    public AvailabilityDTO getAvailabilityById(Long id) {
-        Availability availability = availabilityRepository.findById(id)
-                .orElseThrow(() -> new ApiRequestException("Availability not found"));
-        return convertToDTO(availability);
-    }
-
-    public void deleteAvailability(Long id) {
-        deleteAllPreferencesBetweenAvailability(id);
-        availabilityRepository.deleteById(id);
-    }
-
-    private void deleteAllPreferencesBetweenAvailability(Long availabilityId) {
-        Availability availability = availabilityRepository.findById(availabilityId)
-                .orElseThrow(() -> new ApiRequestException("Availability not found - cannot delete preferences at that period"));
-        DayOfWeek dayOfWeek = availability.getDayOfWeek();
-        LocalTime startTime = availability.getStartTime();
-        LocalTime endTime = availability.getEndTime();
-        //TODO PRZEROBIC TA METODE BO NIE DZIALA
-        //preferenceRepository.deletePreferencesBetweenAvailability(dayOfWeek, startTime, endTime);
-    }
-
-    private AvailabilityDTO convertToDTO(Availability availability) {
-        return new AvailabilityDTO(
-                availability.getId(),
-                availability.getDayOfWeek() != null ? availability.getDayOfWeek().toString() : null,
-                availability.getStartTime() != null ? availability.getStartTime().toString() : null,
-                availability.getEndTime() != null ? availability.getEndTime().toString() : null,
-                availability.getLecturer() != null ? availability.getLecturer().getId() : null
-        );
-    }
-
-    private Availability convertToEntity(AvailabilityDTO availabilityDTO) {
+    public Long addAvailability(AvailabilityDTO dto) {
         Availability availability = new Availability();
-
-        availability.setId(availabilityDTO.getId());
-        if (availabilityDTO.getDayOfWeek() != null) {
-            availability.setDayOfWeek(DayOfWeek.valueOf(availabilityDTO.getDayOfWeek().toUpperCase()));
-        }
-        if (availabilityDTO.getStartTime() != null) {
-            availability.setStartTime(LocalTime.parse(availabilityDTO.getStartTime()));
-        }
-        if (availabilityDTO.getEndTime() != null) {
-            availability.setEndTime(LocalTime.parse(availabilityDTO.getEndTime()));
-        }
-
-        if (availabilityDTO.getLecturerId() != null) {
-            Lecturer lecturer = lecturerRepository.findById(availabilityDTO.getLecturerId())
-                    .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
-            availability.setLecturer(lecturer);
-        }
-
-        return availability;
+        availability.setDayOfWeek(DayOfWeek.of(dto.getIden())); // Zamiana ID dnia na DayOfWeek
+        availability.setLecturer(lecturerRepository.findById(dto.getLecturerId()).orElseThrow());
+        availability.setTimeRanges(dto.getTimeRanges().stream()
+                .map(range -> new TimeRange(LocalTime.parse(range.get(0)), LocalTime.parse(range.get(1))))
+                .collect(Collectors.toList()));
+        availabilityRepository.save(availability);
+        return availability.getId();
     }
 }
 
