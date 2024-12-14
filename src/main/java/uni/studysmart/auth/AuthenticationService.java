@@ -108,15 +108,8 @@ public class AuthenticationService {
         lecturer.setConfirmed(false);
         lecturerRepository.save(lecturer);
 
-
-        var jwtToken = jwtService.generateToken(
-                lecturer,
-                lecturer.getId(),
-                lecturer.getFirstName(),
-                lecturer.getLastName(),
-                lecturer.getRole().toString());
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .token("Poczekaj aż planista Cię potwierdzi, zanim będziesz mógł się zalogować")
                 .build();
 
     }
@@ -158,6 +151,7 @@ public class AuthenticationService {
         }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        //TODO: DODAC SPRAWDZANIE CZY UZYTKOWNIK JEST POTWIERDZONY
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
