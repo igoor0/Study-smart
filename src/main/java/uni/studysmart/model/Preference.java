@@ -36,7 +36,9 @@ public class Preference {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "course_id")
     private Course course;
+
 }

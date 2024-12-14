@@ -82,10 +82,7 @@ public class PreferenceService {
         preference.setDayName(preferenceDTO.getDayName());
         preference.setTimes(preferenceDTO.getTimes());
 
-        List<TimeRange> timeRanges = preferenceDTO.getTimeRanges().stream()
-                .map(this::convertToTimeRange)
-                .collect(Collectors.toList());
-
+        List<TimeRange> timeRanges = parseTimeRanges(preferenceDTO.getTimeRanges());
         preference.setTimeRanges(timeRanges);
 
         if (preferenceDTO.getStudentId() != null) {
@@ -110,6 +107,21 @@ public class PreferenceService {
             return new TimeRange(startTime, endTime);
         }
         throw new ApiRequestException("Invalid time range format");
+    }
+    private List<TimeRange> parseTimeRanges(List<List<String>> timeRanges) {
+        List<TimeRange> parsedTimeRanges = new ArrayList<>();
+        for (List<String> range : timeRanges) {
+            if (range.size() >= 2) {
+                for (int i = 0; i < range.size() - 1; i++) {
+                    LocalTime startTime = LocalTime.parse(range.get(i));
+                    LocalTime endTime = LocalTime.parse(range.get(i + 1));
+                    parsedTimeRanges.add(new TimeRange(startTime, endTime));
+                }
+            } else {
+                throw new ApiRequestException("Invalid time range format: Each range must contain at least two times.");
+            }
+        }
+        return parsedTimeRanges;
     }
 
     private List<List<String>> convertTimeRangesToString(List<TimeRange> timeRanges) {
