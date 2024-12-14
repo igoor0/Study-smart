@@ -157,6 +157,7 @@ public class AuthenticationService {
                         request.getEmail(),
                         request.getPassword())
         );
+
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ApiRequestException("User with the email " + request.getEmail() + " not found"));
         var jwtToken = jwtService.generateToken(
