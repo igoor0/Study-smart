@@ -40,7 +40,7 @@ public class LecturerService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-    
+
     public Long addCourseToLecturer(Long lecturerId, Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ApiRequestException("Course not found"));
@@ -48,9 +48,9 @@ public class LecturerService {
                 .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
 
         course.setLecturer(lecturer);
+        courseRepository.save(course);
         lecturer.getCourses().add(course);
         lecturerRepository.save(lecturer);
-        courseRepository.save(course);
         return lecturer.getId();
     }
 
