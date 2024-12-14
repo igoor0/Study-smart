@@ -124,7 +124,7 @@ public class CourseService {
                 course.getName(),
                 course.getDescription(),
                 course.getCourseDuration(),
-                course.getLecturer().getId(),
+                course.getLecturer() != null ? course.getLecturer().getId() : null,
                 course.getIsScheduled()
         );
     }
