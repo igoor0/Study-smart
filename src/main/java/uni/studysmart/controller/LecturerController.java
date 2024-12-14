@@ -22,8 +22,8 @@ public class LecturerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Lecturer>> getAllLecturers() {
-        List<Lecturer> lecturerList = lecturerService.getAllLecturers();
+    public ResponseEntity<List<LecturerDTO>> getAllLecturers() {
+        List<LecturerDTO> lecturerList = lecturerService.getAllLecturers();
         return ResponseEntity.ok(lecturerList);
     }
 

@@ -8,8 +8,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LecturerDTO {
+
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
+    private String department;
+    private String title;
+    private String classRoom;
+    private String officeNumber;
+    private boolean isEnabled;
+
 }

@@ -2,6 +2,7 @@ package uni.studysmart.service;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uni.studysmart.dto.LecturerDTO;
 import uni.studysmart.exception.ApiRequestException;
 import uni.studysmart.model.Course;
 import uni.studysmart.model.user.Lecturer;
@@ -9,6 +10,7 @@ import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.repository.LecturerRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LecturerService {
@@ -33,10 +35,12 @@ public class LecturerService {
         return lecturer.getId();
     }
 
-    public List<Lecturer> getAllLecturers() {
-        return lecturerRepository.findAll();
+    public List<LecturerDTO> getAllLecturers() {
+        return lecturerRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
-
+    
     public Long addCourseToLecturer(Long lecturerId, Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ApiRequestException("Course not found"));
@@ -54,7 +58,7 @@ public class LecturerService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ApiRequestException("Course not found"));
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
-                        .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
+                .orElseThrow(() -> new ApiRequestException("Lecturer not found"));
         lecturer.getCourses().remove(course);
         course.setLecturer(null);
         lecturerRepository.save(lecturer);
@@ -76,5 +80,19 @@ public class LecturerService {
             lecturer.setConfirmed(true);
             lecturerRepository.save(lecturer);
         }
+    }
+
+    private LecturerDTO convertToDTO(Lecturer lecturer) {
+        return new LecturerDTO(
+                lecturer.getId(),
+                lecturer.getFirstName(),
+                lecturer.getLastName(),
+                lecturer.getEmail(),
+                lecturer.getDepartment(),
+                lecturer.getTitle(),
+                lecturer.getClassRoom(),
+                lecturer.getOfficeNumber(),
+                lecturer.isEnabled()
+        );
     }
 }

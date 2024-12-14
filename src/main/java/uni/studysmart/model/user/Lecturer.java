@@ -20,10 +20,11 @@ public class Lecturer extends User {
     private String officeNumber;
     private boolean confirmed;
 
-    @OneToMany(mappedBy = "lecturer")
-    private List<Course> courses;
     @OneToMany(mappedBy = "lecturer", cascade = CascadeType.ALL)
     private List<Availability> availabilities;
+
+    @OneToMany(mappedBy = "lecturer", cascade = CascadeType.ALL)
+    private List<Course> courses;
 
     @Override
     public boolean isEnabled() {
