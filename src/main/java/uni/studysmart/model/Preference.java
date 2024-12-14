@@ -24,21 +24,20 @@ public class Preference {
     private String dayName;
 
     @ElementCollection
-    @CollectionTable(name = "availability_times", joinColumns = @JoinColumn(name = "availability_id"))
-    @Column(name = "time")
-    private List<String> times;
-
-    @ElementCollection
     @CollectionTable(name = "preference_time_ranges", joinColumns = @JoinColumn(name = "preference_id"))
     @Column(name = "time_range")
     private List<TimeRange> timeRanges;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @ElementCollection
+    @CollectionTable(name = "availability_times", joinColumns = @JoinColumn(name = "availability_id"))
+    @Column(name = "time")
+    private List<String> times;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 }

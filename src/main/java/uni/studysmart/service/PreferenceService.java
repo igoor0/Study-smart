@@ -40,15 +40,20 @@ public class PreferenceService {
         preference = preferenceRepository.save(preference);
         return preference.getId();
     }
+
     public List<Long> addPreferences(List<PreferenceDTO> preferenceDTOList) {
         List<Long> preferenceIdList = new ArrayList<>();
         List<Preference> preferences = new ArrayList<>();
+
         for (PreferenceDTO preferenceDTO : preferenceDTOList) {
             Preference preference = convertToEntity(preferenceDTO);
             preferences.add(preference);
+        }
+
+        List<Preference> savedPreferences = preferenceRepository.saveAll(preferences);
+        for(Preference preference : savedPreferences) {
             preferenceIdList.add(preference.getId());
         }
-        preferenceRepository.saveAll(preferences);
         return preferenceIdList;
     }
 
@@ -68,10 +73,10 @@ public class PreferenceService {
                 preference.getId(),
                 preference.getDayId(),
                 preference.getDayName(),
-                preference.getTimes(),
                 preference.getTimeRanges() != null ? convertTimeRangesToString(preference.getTimeRanges()) : null,
-                preference.getStudent() != null ? preference.getStudent().getId() : null,
-                preference.getCourse() != null ? preference.getCourse().getId() : null
+                preference.getTimes(),
+                preference.getCourse() != null ? preference.getCourse().getId() : null,
+                preference.getStudent() != null ? preference.getStudent().getId() : null
         );
     }
 
@@ -108,6 +113,7 @@ public class PreferenceService {
         }
         throw new ApiRequestException("Invalid time range format");
     }
+
     private List<TimeRange> parseTimeRanges(List<List<String>> timeRanges) {
         List<TimeRange> parsedTimeRanges = new ArrayList<>();
         for (List<String> range : timeRanges) {
