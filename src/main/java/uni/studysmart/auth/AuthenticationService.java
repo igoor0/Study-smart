@@ -151,7 +151,6 @@ public class AuthenticationService {
         }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        //TODO: DODAC SPRAWDZANIE CZY UZYTKOWNIK JEST POTWIERDZONY
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -160,6 +159,9 @@ public class AuthenticationService {
 
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ApiRequestException("User with the email " + request.getEmail() + " not found"));
+        if(user.getRole().equals(Role.LECTURER) && !user.isEnabled()) {
+            throw new ApiRequestException("User with email " + request.getEmail() + " is not confirmed");
+        }
         var jwtToken = jwtService.generateToken(
                 user,
                 user.getId(),
