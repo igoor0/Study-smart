@@ -17,10 +17,9 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String description;
     private Boolean isScheduled = false;
     private Integer courseDuration;
-    private LocalTime startTime;
-    private LocalTime endTime;
 
     @ManyToOne
     private Lecturer lecturer;

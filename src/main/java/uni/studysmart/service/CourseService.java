@@ -106,12 +106,6 @@ public class CourseService {
         existingCourse.setName(courseDTO.getName());
         existingCourse.setIsScheduled(courseDTO.isScheduled());
         existingCourse.setCourseDuration(courseDTO.getCourseDuration());
-        existingCourse.setStartTime(courseDTO.getStartTime() != null
-                ? LocalTime.parse(courseDTO.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"))
-                : null);
-        existingCourse.setEndTime(courseDTO.getEndTime() != null
-                ? LocalTime.parse(courseDTO.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"))
-                : null);
 
         if (courseDTO.getLecturerId() != null) {
             Lecturer lecturer = lecturerRepository.findById(courseDTO.getLecturerId())
@@ -128,11 +122,10 @@ public class CourseService {
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
-                course.getIsScheduled(),
+                course.getDescription(),
                 course.getCourseDuration(),
-                course.getStartTime() != null ? course.getStartTime().toString() : null,
-                course.getEndTime() != null ? course.getEndTime().toString() : null,
-                course.getLecturer() != null ? course.getLecturer().getId() : null
+                course.getLecturer().getId(),
+                course.getIsScheduled()
         );
     }
 
@@ -141,15 +134,9 @@ public class CourseService {
 
         course.setId(courseDTO.getId());
         course.setName(courseDTO.getName());
+        course.setDescription(courseDTO.getDescription());
         course.setCourseDuration(courseDTO.getCourseDuration());
         course.setIsScheduled(courseDTO.isScheduled());
-
-        if (courseDTO.getStartTime() != null) {
-            course.setStartTime(LocalTime.parse(courseDTO.getStartTime()));
-        }
-        if (courseDTO.getEndTime() != null) {
-            course.setEndTime(LocalTime.parse(courseDTO.getEndTime()));
-        }
 
         if (courseDTO.getLecturerId() != null) {
             lecturerRepository.findById(courseDTO.getLecturerId()).ifPresentOrElse(
