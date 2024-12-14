@@ -29,7 +29,7 @@ public class Preference {
     private List<TimeRange> timeRanges;
 
     @ElementCollection
-    @CollectionTable(name = "availability_times", joinColumns = @JoinColumn(name = "availability_id"))
+    @CollectionTable(name = "preference_times", joinColumns = @JoinColumn(name = "preference_id"))
     @Column(name = "time")
     private List<String> times;
 
