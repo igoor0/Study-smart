@@ -38,15 +38,19 @@ public class AvailabilityService {
         return availability.getId();
     }
     public List<Long> addAvailabilities(List<AvailabilityDTO> availabilityDTOList) {
+        List<Long> availabilityIds = new ArrayList<>();
         List<Availability> availabilities = new ArrayList<>();
-        List<Long> availibilityIds = new ArrayList<>();
+
         for(AvailabilityDTO availabilityDTO : availabilityDTOList) {
             Availability availability = convertToEntity(availabilityDTO);
             availabilities.add(availability);
-            availibilityIds.add(availability.getId());
         }
-        availabilityRepository.saveAll(availabilities);
-        return availibilityIds;
+        List<Availability> savedAvailabilities = availabilityRepository.saveAll(availabilities);
+
+        for(Availability savedAvailability : savedAvailabilities) {
+            availabilityIds.add(savedAvailability.getId());
+        }
+        return availabilityIds;
     }
 
     public AvailabilityDTO getAvailabilityById(Long id) {
