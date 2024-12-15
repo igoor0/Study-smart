@@ -78,6 +78,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(apiException, httpStatus);
     }
+    @ExceptionHandler(value = {IndexOutOfBoundsException.class})
+    public ResponseEntity<Object> handleIndexOutOfBoundsException(IndexOutOfBoundsException e) {
+        HttpStatus httpStatus = HttpStatus.NOT_ACCEPTABLE;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                "INDEX_OUT_OF_BOUND"
+
+        );
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
 
 
 }
