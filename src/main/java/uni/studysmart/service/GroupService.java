@@ -3,8 +3,10 @@ package uni.studysmart.service;
 import org.springframework.stereotype.Service;
 import uni.studysmart.dto.GroupDTO;
 import uni.studysmart.exception.ApiRequestException;
+import uni.studysmart.model.Course;
 import uni.studysmart.model.Group;
 import uni.studysmart.model.user.Student;
+import uni.studysmart.repository.CourseRepository;
 import uni.studysmart.repository.GroupRepository;
 import uni.studysmart.repository.StudentRepository;
 
@@ -17,10 +19,12 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
-    public GroupService(GroupRepository groupRepository, StudentRepository studentRepository) {
+    public GroupService(GroupRepository groupRepository, StudentRepository studentRepository, CourseRepository courseRepository) {
         this.groupRepository = groupRepository;
         this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
     }
 
     public List<GroupDTO> getAllGroups() {
@@ -49,7 +53,8 @@ public class GroupService {
         return new GroupDTO(
                 group.getId(),
                 group.getName(),
-                group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null
+                group.getStudents() != null ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList()) : null,
+                group.getCourses() != null? group.getCourses().stream().map(Course::getId).collect(Collectors.toList()) : null
         );
     }
 
@@ -63,8 +68,15 @@ public class GroupService {
                         .orElseThrow(() -> new ApiRequestException("Student with ID " + studentId + " not found")))
                 .collect(Collectors.toList())
                 : List.of();
-
         group.setStudents(students);
+
+        List<Course> courses = (groupDTO.getCourseIdList() != null)
+                ? groupDTO.getCourseIdList().stream()
+                .map(courseId -> courseRepository.findById(courseId)
+                        .orElseThrow(() -> new ApiRequestException("Course with ID " + courseId + " not found")))
+                .collect(Collectors.toList())
+                : List.of();
+        group.setCourses(courses);
 
         students.forEach(student -> student.setGroup(group));
 
@@ -85,7 +97,14 @@ public class GroupService {
                         .orElseThrow(() -> new ApiRequestException("Student with ID " + studentId + " not found")))
                 .collect(Collectors.toList());
 
+        List<Long> courseIdList = groupDTO.getCourseIdList() != null ? groupDTO.getCourseIdList() : List.of();
+        List<Course> courses = courseIdList.stream()
+                        .map(courseId -> courseRepository.findById(courseId)
+                                .orElseThrow(() -> new ApiRequestException("Course with ID " + courseId + " not found")))
+                .collect(Collectors.toList());
+
         existingGroup.setStudents(students);
+        existingGroup.setCourses(courses);
         students.forEach(student -> student.setGroup(existingGroup));
         Group updatedGroup = groupRepository.save(existingGroup);
         return updatedGroup.getId();
