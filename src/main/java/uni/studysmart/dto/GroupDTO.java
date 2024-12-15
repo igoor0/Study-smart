@@ -30,4 +30,5 @@ public class GroupDTO {
     public GroupDTO(String name) {
         this.name = name;
     }
+
 }

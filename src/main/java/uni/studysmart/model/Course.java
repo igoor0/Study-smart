@@ -23,4 +23,9 @@ public class Course {
 
     @ManyToOne
     private Lecturer lecturer;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+
 }

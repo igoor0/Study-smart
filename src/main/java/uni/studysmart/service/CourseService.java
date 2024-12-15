@@ -113,6 +113,11 @@ public class CourseService {
             existingCourse.setLecturer(lecturer);
         }
 
+        if (courseDTO.getGroupId() != null) {
+            Group group = groupRepository.findById(courseDTO.getGroupId())
+                    .orElseThrow(() -> new ApiRequestException("Group not found"));
+            existingCourse.setGroup(group);
+        }
 
         Course updatedCourse = courseRepository.save(existingCourse);
         return convertToDTO(updatedCourse);
@@ -125,6 +130,7 @@ public class CourseService {
                 course.getDescription(),
                 course.getCourseDuration(),
                 course.getLecturer() != null ? course.getLecturer().getId() : null,
+                course.getGroup() != null ? course.getGroup().getId() : null,
                 course.getIsScheduled()
         );
     }
@@ -148,6 +154,17 @@ public class CourseService {
         } else {
             course.setLecturer(null);
         }
+        if (courseDTO.getGroupId() != null) {
+            groupRepository.findById(courseDTO.getGroupId()).ifPresentOrElse(
+                    course::setGroup,
+                    () -> {
+                        throw new ApiRequestException("Lecturer with ID " + courseDTO.getGroupId() + " not found");
+                    }
+            );
+        } else {
+            course.setGroup(null);
+        }
+
 
         return course;
     }

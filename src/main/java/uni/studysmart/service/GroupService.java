@@ -77,7 +77,6 @@ public class GroupService {
                 .collect(Collectors.toList())
                 : List.of();
         group.setCourses(courses);
-
         students.forEach(student -> student.setGroup(group));
 
         return group;

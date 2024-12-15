@@ -10,6 +10,7 @@ public class CourseDTO {
     private String description;
     private int courseDuration;
     private Long lecturerId;
+    private Long groupId;
     private boolean scheduled;
 
 
@@ -18,6 +19,15 @@ public class CourseDTO {
         this.description = description;
         this.scheduled = false;
         this.courseDuration = courseDuration;
+    }
+
+    public CourseDTO(String name, String description, int courseDuration, Long lecturerId, Long groupId, boolean scheduled) {
+        this.name = name;
+        this.description = description;
+        this.courseDuration = courseDuration;
+        this.lecturerId = lecturerId;
+        this.groupId = groupId;
+        this.scheduled = scheduled;
     }
 
     public CourseDTO(String name, String description, int courseDuration, long lecturerId) {
@@ -42,6 +52,16 @@ public class CourseDTO {
         this.description = description;
         this.courseDuration = courseDuration;
         this.lecturerId = lecturerId;
+        this.scheduled = scheduled;
+    }
+
+    public CourseDTO(Long id, String name, String description, int courseDuration, Long lecturerId, Long groupId, boolean scheduled) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.courseDuration = courseDuration;
+        this.lecturerId = lecturerId;
+        this.groupId = groupId;
         this.scheduled = scheduled;
     }
 }
