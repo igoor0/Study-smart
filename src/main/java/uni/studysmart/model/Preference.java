@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uni.studysmart.model.user.Student;
-import uni.studysmart.utils.TimeRange;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Getter
