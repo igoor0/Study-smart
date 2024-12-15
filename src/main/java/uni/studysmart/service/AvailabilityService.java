@@ -7,9 +7,8 @@ import uni.studysmart.model.Availability;
 import uni.studysmart.model.user.Lecturer;
 import uni.studysmart.repository.AvailabilityRepository;
 import uni.studysmart.repository.LecturerRepository;
-import uni.studysmart.utils.TimeRange;
+import uni.studysmart.model.TimeRange;
 
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +62,7 @@ public class AvailabilityService {
         availabilityRepository.deleteById(id);
     }
 
-    private AvailabilityDTO convertToDTO(Availability availability) {
+    public AvailabilityDTO convertToDTO(Availability availability) {
         return new AvailabilityDTO(
                 availability.getId(),
                 availability.getDayId(),
@@ -91,10 +90,13 @@ public class AvailabilityService {
 
         if (availabilityDTO.getTimeRanges() != null) {
             List<TimeRange> timeRanges = availabilityDTO.getTimeRanges().stream()
-                    .map(timeRangeStrings -> new TimeRange(
-                            LocalTime.parse(timeRangeStrings.get(0)),
-                            LocalTime.parse(timeRangeStrings.get(1))
-                    ))
+                    .map(timeRangeStrings -> {
+                        LocalTime startTime = LocalTime.parse(timeRangeStrings.get(0));
+                        LocalTime endTime = timeRangeStrings.size() > 1
+                                ? LocalTime.parse(timeRangeStrings.get(1))
+                                : startTime;
+                        return new TimeRange(startTime, endTime);
+                    })
                     .collect(Collectors.toList());
             availability.setTimeRanges(timeRanges);
         }
