@@ -104,6 +104,7 @@ public class CourseService {
                 .orElseThrow(() -> new ApiRequestException("Course not found with id: " + id));
 
         existingCourse.setName(courseDTO.getName());
+        existingCourse.setDescription(courseDTO.getDescription());
         existingCourse.setIsScheduled(courseDTO.isScheduled());
         existingCourse.setCourseDuration(courseDTO.getCourseDuration());
 
